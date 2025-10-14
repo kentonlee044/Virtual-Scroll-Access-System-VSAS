@@ -1,13 +1,12 @@
 package a3.t10.g09.validator;
 
-import a3.t10.g09.Validator;
 public class NameValidator implements Validator {
     @Override
-    public String validate(Object input) {
-        if (input == null) {
+    public String validate(String name) {
+        if (name == null) {
             return "Name cannot be null.";
         }
-        String name = input.toString().trim();
+        name = name.trim();
         if (name.isEmpty()) {
             return "Name cannot be empty.";
         }

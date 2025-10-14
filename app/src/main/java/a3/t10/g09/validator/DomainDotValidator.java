@@ -1,13 +1,11 @@
 package a3.t10.g09.validator;
 
-import a3.t10.g09.Validator;
 public class DomainDotValidator implements Validator {
     @Override
-    public String validate(Object input) {
-        if (input == null) {
+    public String validate(String email) {
+        if (email == null) {
             return "Email cannot be null.";
         }
-        String email = input.toString();
         int atIndex = email.indexOf('@');
         if (atIndex == -1) {
             return "Email must contain '@'.";
