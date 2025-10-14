@@ -1,5 +1,7 @@
 package a3.t10.g09;
 
+import org.mindrot.jbcrypt.BCrypt;
+
 public class UserRegistration {
     // Placeholder for user registration logic
 
