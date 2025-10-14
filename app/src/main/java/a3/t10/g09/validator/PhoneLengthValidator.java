@@ -1,5 +1,6 @@
-package a3.t10.g09;
+package a3.t10.g09.validator;
 
+import a3.t10.g09.Validator;
 public class PhoneLengthValidator implements Validator {
     @Override
     public String validate(Object input) {
