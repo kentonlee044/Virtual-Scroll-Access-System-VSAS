@@ -15,7 +15,7 @@ public class UserLogin {
     private String userData = "data/users.json";
 
     public UserList getUserData() {
-        try (JsonReader reader = new JsonReader(new FileReader(userDataPath))) {
+        try (JsonReader reader = new JsonReader(new FileReader(DataPath))) {
             Gson gson = new Gson();
             return gson.fromJson(reader, UserList.class);
         } catch (IOException e) {
