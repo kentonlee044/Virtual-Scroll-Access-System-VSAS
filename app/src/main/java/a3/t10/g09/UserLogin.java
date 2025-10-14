@@ -8,6 +8,7 @@ public class UserLogin {
 
     // Retrieve info from JSON file
     private String userData = "data/users.json";
+    //TODO retrieve user data outside of any methods first
 
     public String getUserData() {
         // TODO Reads the JSON file and returns its content , may need to change type
@@ -15,13 +16,13 @@ public class UserLogin {
     }
 
     // Methods that interact with the JSON file 
-    public boolean isValidUsername(String username) {
+    public boolean isValidUsername(JSON data, String username) {
         // Checks if username is existing inside the json file
         // TODO check if username exists in JSON file
         return false;
     }
 
-    public boolean isValidUser(String username, String password) {
+    public boolean isValidUser(JSON data, String username, String password) {
         // Checks if user inputted password matches the usernames' hashed passwords inside the json file
         // TODO check if password matches the username in JSON file
         return false;
@@ -52,25 +53,20 @@ public class UserLogin {
         String password = scanner.next();
         return password;
     }
-    public boolean authenticateUser(String username, String password) {
+    public boolean authenticateUser(JSON data, String username, String password) {
         // Authenticate user against stored credentials
 
-        String data = this.getUserData(); 
-        String inputUsername = this.inputIDKey();
-        String inputPassword = this.inputPassword();
-
-        if(!this.isValidUsername(inputUsername)){
-            this.getUnsuccessfulUsername();
+        if(!this.isValidUsername(data, username)){
+            System.out.println(this.getUnsuccessfulUsername());
             return false;
         }
-        else if(!this.isValidUser(inputUsername, inputPassword)){
-            this.getUnsuccessfulPassword();
+        else if(!this.isValidUser(data, username, password)){
+            System.out.println(this.getUnsuccessfulPassword());
             return false;
         }
         else{
-            this.getSuccessfulLoginMessage();
+            System.out.println(this.getSuccessfulLoginMessage());
             return true;
         }
-        return false;
     }
 }
