@@ -9,6 +9,16 @@ public class User {
     private String role;
     private String password; // This should be the hashed password
 
+    public User(String idkey, String username, String email, String fullname, String phoneNumber, String role, String password){
+        this.idkey = idkey;
+        this.username = username;
+        this.email = email;
+        this.fullname = fullname;
+        this.phoneNumber = phoneNumber;
+        this.role = role;
+        this.password = password;
+    }
+
     // Getters
     public String getIdkey() { 
         return idkey; 

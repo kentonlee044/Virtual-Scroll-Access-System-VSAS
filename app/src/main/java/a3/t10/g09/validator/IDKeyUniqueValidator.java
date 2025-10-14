@@ -14,7 +14,7 @@ public class IDKeyUniqueValidator implements Validator {
             return "ID key cannot be null.";
         }
         String idKey = input.toString();
-        if (userList.getUsers().stream().anyMatch(user -> user.getUsername().equals(idKey))) {
+        if (userList.getUsers().stream().anyMatch(user -> user.getIdkey().equals(idKey))) {
             return "ID key is already in use.";
         }
         return null;

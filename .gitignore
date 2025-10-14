@@ -6,3 +6,6 @@ build
 
 # Ignore runtime data
 app/src/main/java/a3/data/
+
+# Ignore compiled binaries
+bin/
