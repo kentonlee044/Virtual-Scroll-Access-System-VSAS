@@ -114,7 +114,7 @@ public class UserRegistration {
         }
     }
 
-    private void saveUsers(UserList users) {
+    public void saveUsers(UserList users) {
         try {
             ensureFile();
             Path target = Path.of(USER_DATA);
