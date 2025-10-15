@@ -17,8 +17,9 @@ import a3.t10.g09.validator.PhoneLengthValidator;
 
 public class RegisterCli {
     private static final String CLEAR_SCREEN = "\033[H\033[2J";
-    private static final int FIELD_WIDTH = 26;
-    private static final int STATUS_WIDTH = 42;
+    private static final int BOX_WIDTH = 70;
+    private static final int LABEL_WIDTH = 16;
+    private static final int FIELD_WIDTH = 42;
     private static final String INPUT_HINT = "Press Enter to confirm · Ctrl+C to cancel";
     private static final String SUBMIT_HINT = "Press Enter to submit · Ctrl+C to cancel";
 
@@ -58,11 +59,11 @@ public class RegisterCli {
     }
 
     private static String promptName(Scanner scanner,
-            String fullName,
-            String email,
-            String idKey,
-            String phone,
-            String password) {
+                                     String fullName,
+                                     String email,
+                                     String idKey,
+                                     String phone,
+                                     String password) {
         String status = "Enter full name:";
         String candidate = fullName;
         var validator = new NameValidator();
@@ -79,12 +80,12 @@ public class RegisterCli {
     }
 
     private static String promptEmail(Scanner scanner,
-            UserRegistration registration,
-            String fullName,
-            String email,
-            String idKey,
-            String phone,
-            String password) {
+                                      UserRegistration registration,
+                                      String fullName,
+                                      String email,
+                                      String idKey,
+                                      String phone,
+                                      String password) {
         String status = "Enter email address:";
         String candidate = email;
         while (true) {
@@ -104,12 +105,12 @@ public class RegisterCli {
     }
 
     private static String promptIdKey(Scanner scanner,
-            UserRegistration registration,
-            String fullName,
-            String email,
-            String idKey,
-            String phone,
-            String password) {
+                                      UserRegistration registration,
+                                      String fullName,
+                                      String email,
+                                      String idKey,
+                                      String phone,
+                                      String password) {
         String status = "Create a unique ID key:";
         String candidate = idKey;
         while (true) {
@@ -128,11 +129,11 @@ public class RegisterCli {
     }
 
     private static String promptPhone(Scanner scanner,
-            String fullName,
-            String email,
-            String idKey,
-            String phone,
-            String password) {
+                                      String fullName,
+                                      String email,
+                                      String idKey,
+                                      String phone,
+                                      String password) {
         String status = "Enter phone number:";
         String candidate = phone;
         while (true) {
@@ -150,12 +151,12 @@ public class RegisterCli {
     }
 
     private static String promptPassword(Scanner scanner,
-            Console console,
-            String fullName,
-            String email,
-            String idKey,
-            String phone,
-            String password) {
+                                         Console console,
+                                         String fullName,
+                                         String email,
+                                         String idKey,
+                                         String phone,
+                                         String password) {
         String status = "Create a password (9+ chars, 1 special):";
         String candidate = password;
         while (true) {
@@ -187,42 +188,61 @@ public class RegisterCli {
     }
 
     private static void renderForm(String status,
-            String hint,
-            String fullName,
-            String email,
-            String idKey,
-            String phone,
-            String password) {
+                                   String hint,
+                                   String fullName,
+                                   String email,
+                                   String idKey,
+                                   String phone,
+                                   String password) {
         System.out.print(CLEAR_SCREEN);
         System.out.flush();
-        System.out.println("┌─ New User ───────────────────────────────────┐");
+        printBorder('┌', '─', '┐');
+        System.out.println(centerRow("New User"));
+        printBorder('├', '─', '┤');
         System.out.println(fieldLine("Full name", fullName, false));
         System.out.println(fieldLine("Email", email, false));
         System.out.println(fieldLine("ID key", idKey, false));
         System.out.println(fieldLine("Phone", phone, false));
         System.out.println(fieldLine("Password", password, true));
-        System.out.println("├──────────────────────────────────────────────┤");
-        System.out.println(statusLine(status));
-        System.out.println(statusLine(hint));
-        System.out.println("└──────────────────────────────────────────────┘");
+        printBorder('├', '─', '┤');
+        System.out.println(row(status));
+        System.out.println(row(hint));
+        printBorder('└', '─', '┘');
+    }
+
+    private static void printBorder(char left, char fill, char right) {
+        System.out.println(left + String.valueOf(fill).repeat(BOX_WIDTH) + right);
+    }
+
+    private static String centerRow(String text) {
+        String content = text == null ? "" : text;
+        if (content.length() > BOX_WIDTH) {
+            content = content.substring(0, BOX_WIDTH - 1) + "…";
+        }
+        int padding = Math.max(0, BOX_WIDTH - content.length());
+        int leftPad = padding / 2;
+        int rightPad = padding - leftPad;
+        return "│" + " ".repeat(leftPad) + content + " ".repeat(rightPad) + "│";
+    }
+
+    private static String row(String text) {
+        String content = text == null ? "" : text;
+        if (content.length() > BOX_WIDTH) {
+            content = content.substring(0, BOX_WIDTH - 1) + "…";
+        }
+        return "│" + String.format("%-" + BOX_WIDTH + "s", content) + "│";
     }
 
     private static String fieldLine(String label, String value, boolean mask) {
-        return String.format("│ %-13s [%s] │", label, padValue(value, mask));
-    }
-
-    private static String statusLine(String text) {
-        String content = text == null ? "" : text;
-        if (content.length() > STATUS_WIDTH) {
-            content = content.substring(0, STATUS_WIDTH - 1) + "…";
-        }
-        return String.format("│ %-42s │", content);
+        String paddedValue = padValue(value, mask);
+        String content = String.format("%-" + LABEL_WIDTH + "s [%s]", label, paddedValue);
+        return row(content);
     }
 
     private static String padValue(String value, boolean mask) {
         String content = value == null ? "" : value;
         if (mask) {
-            content = "*".repeat(Math.max(0, Math.min(content.length(), FIELD_WIDTH)));
+            content = "*".repeat(Math.min(content.length(), FIELD_WIDTH));
         }
         if (content.length() > FIELD_WIDTH) {
             content = content.substring(0, FIELD_WIDTH - 1) + "…";

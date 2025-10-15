@@ -29,7 +29,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class UserRegistration {
-    private static final String USER_DATA = "app/src/main/java/a3/t10/g09/data/users.json";
+    private static final String USER_DATA = "src/main/java/a3/t10/g09/data/users.json";
 
     private final Gson gson = new Gson();
 
@@ -79,9 +79,6 @@ public class UserRegistration {
                 normEmail, // email (unique, stored lower-case)
                 hashed // hashed password
         );
-
-        users.addUser(newUser);
-        saveUsers(users);
 
         users.addUser(newUser);
         saveUsers(users);
