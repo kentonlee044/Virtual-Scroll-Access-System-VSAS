@@ -19,7 +19,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class UserRegistration {
-    private static final String USER_DATA = "data/users.json";
+    private static final String USER_DATA = "app/src/main/java/a3/t10/g09/data/users.json";
+
     private final Gson gson = new Gson();
 
     // Method to hash passwords using BCrypt
@@ -67,14 +68,15 @@ public class UserRegistration {
         String hashed = hashPassword(password);
 
         User newUser = new User(
-                name, // name
+                normIdKey, // id key (unique)
+                name, // full name
                 normPhone, // phone
-                normEmail, // email
-                normIdKey, // ID key / username
-                hashed, // hashed password
-                "user", // role
-                "" // extra if needed
+                normEmail, // email (unique, stored lower-case)
+                hashed // hashed password
         );
+
+        users.addUser(newUser);
+        saveUsers(users);
 
         users.addUser(newUser);
         saveUsers(users);
