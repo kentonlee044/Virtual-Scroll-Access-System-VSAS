@@ -6,7 +6,17 @@ import com.google.gson.stream.JsonReader;
 
 import a3.t10.g09.User;
 import a3.t10.g09.UserList;
-import a3.t10.g09.validator.*;
+import a3.t10.g09.validator.AtSymbolValidator;
+import a3.t10.g09.validator.DomainDotValidator;
+import a3.t10.g09.validator.EmailUniqueValidator;
+import a3.t10.g09.validator.IDKeyFormatValidator;
+import a3.t10.g09.validator.IDKeyUniqueValidator;
+import a3.t10.g09.validator.NameValidator;
+import a3.t10.g09.validator.PasswordLengthValidator;
+import a3.t10.g09.validator.PasswordSpecialCharValidator;
+import a3.t10.g09.validator.PhoneDigitValidator;
+import a3.t10.g09.validator.PhoneLengthValidator;
+import a3.t10.g09.validator.Validator;
 
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -19,15 +29,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class UserRegistration {
-    private static final String USER_DATA = "data/users.json";
+    private static final String USER_DATA = "src/main/java/a3/t10/g09/data/users.json";
+
     private final Gson gson = new Gson();
 
-    // Method to hash passwords using BCrypt
     public String hashPassword(String password) {
         String salt = BCrypt.gensalt(12);
-        String hashedPassword = BCrypt.hashpw(password, salt);
-
-        return hashedPassword;
+        return BCrypt.hashpw(password, salt);
     }
 
     public RegistrationResult register(String fullName,
@@ -38,13 +46,11 @@ public class UserRegistration {
         UserList users = loadUsers();
         List<String> errors = new ArrayList<>();
 
-        // ★ Normalize inputs early
         String name = safe(fullName);
         String normEmail = safe(email).toLowerCase();
         String normPhone = safe(phone);
         String normIdKey = safe(idKey);
 
-        // Validate using existing validators
         collectError(new NameValidator(), name, errors);
 
         collectError(new AtSymbolValidator(), normEmail, errors);
@@ -57,8 +63,8 @@ public class UserRegistration {
         collectError(new IDKeyFormatValidator(), normIdKey, errors);
         collectError(new IDKeyUniqueValidator(users), normIdKey, errors);
 
-        // Password: > 8 chars + at least 1 special character
         collectError(new PasswordLengthValidator(), password, errors);
+        collectError(new PasswordSpecialCharValidator(), password, errors);
 
         if (!errors.isEmpty()) {
             return RegistrationResult.failed(errors);
@@ -67,13 +73,11 @@ public class UserRegistration {
         String hashed = hashPassword(password);
 
         User newUser = new User(
-                name, // name
+                normIdKey, // id key (unique)
+                name, // full name
                 normPhone, // phone
-                normEmail, // email
-                normIdKey, // ID key / username
-                hashed, // hashed password
-                "user", // role
-                "" // extra if needed
+                normEmail, // email (unique, stored lower-case)
+                hashed // hashed password
         );
 
         users.addUser(newUser);
@@ -82,17 +86,21 @@ public class UserRegistration {
         return RegistrationResult.ok("Account created successfully.");
     }
 
+    public UserList currentUsers() {
+        return loadUsers();
+    }
+
     private void collectError(Validator v, String input, List<String> errors) {
         String msg = v.validate(input);
-        if (msg != null && !msg.isBlank())
+        if (msg != null && !msg.isBlank()) {
             errors.add(msg);
+        }
     }
 
     private static String safe(String s) {
         return s == null ? "" : s.trim();
-    } // ★
+    }
 
-    // ---------- JSON helpers ----------
     private UserList loadUsers() {
         try {
             ensureFile();
@@ -109,7 +117,6 @@ public class UserRegistration {
     private void saveUsers(UserList users) {
         try {
             ensureFile();
-            // ★ Atomic write: write to .tmp then move over the real file
             Path target = Path.of(USER_DATA);
             Path tmp = target.resolveSibling(target.getFileName() + ".tmp");
             try (Writer writer = new FileWriter(tmp.toFile())) {
@@ -133,7 +140,6 @@ public class UserRegistration {
         }
     }
 
-    // Simple result wrapper
     public static class RegistrationResult {
         private final boolean success;
         private final List<String> messages;
