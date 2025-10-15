@@ -83,7 +83,7 @@ public class UserLogin {
         
         String role = getUserRole(userList, username);
         System.out.println(getSuccessfulLoginMessage());
-        System.out.println("Logged in as: " + role);
+        System.out.println("Logged in as: " + username + role);
 
         // Role-based access control logic
         switch (role.toLowerCase()) {
