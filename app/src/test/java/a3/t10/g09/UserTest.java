@@ -14,11 +14,10 @@ class UserTest {
 
     @BeforeEach
     public void setUp() {
+        UserRegistration userReg = new UserRegistration();
+        String hashedPassword = userReg.hashPassword("SOFT2412");
 
-        UserRegistration userReg1 = new UserRegistration();
-        String password = userReg1.hashPassword("SOFT2412");
-
-        user = new User("1", "Thomas", "thomas@gmail.com", "Thomas Shelby", "1234567890", "admin", password);
+        user = new User("1", "Thomas Shelby", "1234567890", "thomas@gmail.com", hashedPassword);
     }
 
     @Test
@@ -27,8 +26,13 @@ class UserTest {
     }
 
     @Test
-    public void getUsernameTest() {
-        assertEquals("Thomas", user.getUsername());
+    public void getFullnameTest() {
+        assertEquals("Thomas Shelby", user.getFullname());
+    }
+
+    @Test
+    public void getPhoneTest() {
+        assertEquals("1234567890", user.getPhone());
     }
 
     @Test
@@ -37,25 +41,7 @@ class UserTest {
     }
 
     @Test
-    public void getFullnameTest() {
-        assertEquals("Thomas Shelby", user.getFullname());
-    }
-
-    @Test
-    public void getPhoneNumberTest() {
-        assertEquals("1234567890", user.getPhoneNumber());
-    }
-
-    @Test
-    public void getRoleTest() {
-        assertEquals("admin", user.getRole());
-    }
-
-    @Test
     public void getPasswordTest() {
-        String password = "SOFT2412";
-        boolean hashedPassword = BCrypt.checkpw(password, user.getPassword());
-        assertTrue(hashedPassword);
-
+        assertTrue(BCrypt.checkpw("SOFT2412", user.getPassword()));
     }
 }
