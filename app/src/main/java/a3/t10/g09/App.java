@@ -10,5 +10,12 @@ public class App {
 
     public static void main(String[] args) {
         System.out.println(new App().getGreeting());
+
+        User user = new User("John Doe", "1234567890", "", "", "", "", "");
+        UserList users = new UserList();
+        users.addUser(user);
+        ProfileUpdateController controller = new ProfileUpdateController(user, users);
+        controller.displayMenu();
+
     }
 }
