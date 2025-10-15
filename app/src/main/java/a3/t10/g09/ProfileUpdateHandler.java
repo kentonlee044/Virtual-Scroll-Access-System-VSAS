@@ -40,8 +40,7 @@ public class ProfileUpdateHandler {
             return;
         }
 
-        // If all validators pass, we update the user object in UserList
-        user.setPhoneNumber(newPhone);
+        user.setPhone(newPhone);
     }
 
     public void updateEmail() {
