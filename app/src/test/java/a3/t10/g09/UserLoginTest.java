@@ -9,6 +9,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import a3.t10.g09.Login.UserLogin;
 import a3.t10.g09.Registration.UserRegistration;
 
 public class UserLoginTest {
