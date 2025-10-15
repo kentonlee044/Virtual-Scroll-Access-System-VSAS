@@ -1,5 +1,6 @@
 package a3.t10.g09;
 
+import a3.t10.g09.Registration.UserRegistration;
 import a3.t10.g09.validator.AtSymbolValidator;
 import a3.t10.g09.validator.DomainDotValidator;
 import a3.t10.g09.validator.PhoneLengthValidator;
@@ -42,6 +43,7 @@ public class ProfileUpdateHandler {
         }
 
         user.setPhone(newPhone);
+        System.out.println("Phone number updated successfully.");
     }
 
     public void updateEmail() {
@@ -63,6 +65,7 @@ public class ProfileUpdateHandler {
         }
         // if all validators pass, we update the user object in UserList
         user.setEmail(newEmail);
+        System.out.println("Email updated successfully.");
     }
 
     public void updateName() {
@@ -78,6 +81,7 @@ public class ProfileUpdateHandler {
         }
         // If validator passes, we update the user object in UserList
         user.setFullname(newName);
+        System.out.println("Name updated successfully.");
     }
 
     public void updateIDKey(UserList userList) {
@@ -99,6 +103,7 @@ public class ProfileUpdateHandler {
         }
         // If all validators pass, we update the user object in UserList
         user.setIdkey(newIDKey);
+        System.out.println("ID key updated successfully.");
     }
 
     public void updatePassword() {
@@ -140,7 +145,10 @@ public class ProfileUpdateHandler {
             return;
         }
         // If all validators pass, we update the user object in UserList
-
+        newPass = BCrypt.hashpw(newPass, BCrypt.gensalt(12));
         user.setPassword(newPass);
+
+        System.out.println("Password updated successfully.");
+
     }
 }
