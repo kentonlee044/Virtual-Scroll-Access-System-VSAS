@@ -1,4 +1,5 @@
 package a3.t10.g09;
+
 import a3.t10.g09.validator.AtSymbolValidator;
 import a3.t10.g09.validator.DomainDotValidator;
 import a3.t10.g09.validator.PhoneLengthValidator;
@@ -17,11 +18,11 @@ public class ProfileUpdateHandler {
     private final Scanner scanner = new Scanner(System.in);
     private User user;
 
-    public ProfileUpdateHandler(User user){
+    public ProfileUpdateHandler(User user) {
         this.user = user;
     }
 
-    public void updatePhoneNumber(){
+    public void updatePhoneNumber() {
         PhoneLengthValidator lengthValidator = new PhoneLengthValidator();
         PhoneDigitValidator digitValidator = new PhoneDigitValidator();
 
@@ -30,11 +31,11 @@ public class ProfileUpdateHandler {
 
         String result_1 = lengthValidator.validate(newPhone);
         String result_2 = digitValidator.validate(newPhone);
-        if(result_1 != null){
+        if (result_1 != null) {
             System.out.println(result_1);
             return;
         }
-        if(result_2 != null){
+        if (result_2 != null) {
             System.out.println(result_2);
             return;
         }
@@ -43,7 +44,7 @@ public class ProfileUpdateHandler {
         user.setPhoneNumber(newPhone);
     }
 
-    public void updateEmail(){
+    public void updateEmail() {
         AtSymbolValidator atSymbolValidator = new AtSymbolValidator();
         DomainDotValidator domainDotValidator = new DomainDotValidator();
 
@@ -52,26 +53,26 @@ public class ProfileUpdateHandler {
 
         String result_1 = atSymbolValidator.validate(newEmail);
         String result_2 = domainDotValidator.validate(newEmail);
-        if(result_1 != null){
+        if (result_1 != null) {
             System.out.println(result_1);
             return;
         }
-        if(result_2 != null){
+        if (result_2 != null) {
             System.out.println(result_2);
             return;
         }
-        //if all validators pass, we update the user object in UserList
+        // if all validators pass, we update the user object in UserList
         user.setEmail(newEmail);
     }
 
-    public void updateName(){
+    public void updateName() {
         NameValidator nameValidator = new NameValidator();
-        
+
         System.out.print("Enter new name: ");
         String newName = scanner.nextLine();
 
         String result = nameValidator.validate(newName);
-        if(result != null){
+        if (result != null) {
             System.out.println(result);
             return;
         }
@@ -88,11 +89,11 @@ public class ProfileUpdateHandler {
 
         String result_1 = formatValidator.validate(newIDKey);
         String result_2 = uniqueValidator.validate(newIDKey);
-        if(result_1 != null){
+        if (result_1 != null) {
             System.out.println(result_1);
             return;
         }
-        if(result_2 != null){
+        if (result_2 != null) {
             System.out.println(result_2);
             return;
         }
@@ -104,13 +105,13 @@ public class ProfileUpdateHandler {
         System.out.print("Enter current password: ");
         String currPass = scanner.nextLine();
 
-        //validate current password with bcrypt
+        // validate current password with bcrypt
         if (!BCrypt.checkpw(currPass, user.getPassword())) {
             System.out.println("Current password is incorrect.");
             return;
         }
 
-        //get new password
+        // get new password
         System.out.print("Enter new password: ");
         String newPass = scanner.nextLine();
 
@@ -120,15 +121,15 @@ public class ProfileUpdateHandler {
         String result_1 = digitValidator.validate(newPass);
         String result_2 = lengthValidator.validate(newPass);
         String result_3 = uppercaseValidator.validate(newPass);
-        if(result_1 != null){
+        if (result_1 != null) {
             System.out.println(result_1);
             return;
         }
-        if(result_2 != null){
+        if (result_2 != null) {
             System.out.println(result_2);
             return;
         }
-        if(result_3 != null){
+        if (result_3 != null) {
             System.out.println(result_3);
             return;
         }
