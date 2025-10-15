@@ -33,7 +33,7 @@ public class UserLoginTest{
         userList.addUser(admin1);
         userList.addUser(random1);
     }
-    // TODO users.json currently has no users, so this test will fail
+
     @Test
     public void testGetUserData() throws IOException {
         File tempFile = File.createTempFile("test-users", ".json");
