@@ -7,6 +7,7 @@ import a3.t10.g09.validator.PhoneDigitValidator;
 import a3.t10.g09.validator.NameValidator;
 import a3.t10.g09.validator.PasswordDigitValidator;
 import a3.t10.g09.validator.PasswordLengthValidator;
+import a3.t10.g09.validator.PasswordSpecialCharValidator;
 import a3.t10.g09.validator.PasswordUppercaseValidator;
 import a3.t10.g09.validator.IDKeyFormatValidator;
 import a3.t10.g09.validator.IDKeyUniqueValidator;
@@ -117,9 +118,11 @@ public class ProfileUpdateHandler {
         PasswordDigitValidator digitValidator = new PasswordDigitValidator();
         PasswordLengthValidator lengthValidator = new PasswordLengthValidator();
         PasswordUppercaseValidator uppercaseValidator = new PasswordUppercaseValidator();
+        PasswordSpecialCharValidator specialCharValidator = new PasswordSpecialCharValidator();
         String result_1 = digitValidator.validate(newPass);
         String result_2 = lengthValidator.validate(newPass);
         String result_3 = uppercaseValidator.validate(newPass);
+        String result_4 = specialCharValidator.validate(newPass);
         if (result_1 != null) {
             System.out.println(result_1);
             return;
@@ -132,7 +135,12 @@ public class ProfileUpdateHandler {
             System.out.println(result_3);
             return;
         }
+        if (result_4 != null) {
+            System.out.println(result_4);
+            return;
+        }
         // If all validators pass, we update the user object in UserList
+
         user.setPassword(newPass);
     }
 }
