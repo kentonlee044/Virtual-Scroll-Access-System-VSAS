@@ -2,9 +2,12 @@ package a3.t10.g09;
 
 import java.io.ByteArrayInputStream;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import java.io.IOException;
+import java.io.File;
+import java.nio.file.Files;
 
 public class UserLoginTest{
     private UserList userList;
@@ -30,13 +33,51 @@ public class UserLoginTest{
         userList.addUser(admin1);
         userList.addUser(random1);
     }
-    // TODO users.json currently has no users, so this test will fail
-    // @Test
-    // public void testGetUserData(){
-    //     login = new UserLogin();
-    //     UserList retrievedList = login.getUserData();
-    //     assertEquals(5, retrievedList.getUsers().size());
-    // }
+
+    @Test
+    public void testGetUserData() throws IOException {
+        File tempFile = File.createTempFile("test-users", ".json");
+        tempFile.deleteOnExit();
+
+        String json = """
+            {
+                "users": [
+                    {
+                        "idkey": "1",
+                        "username": "tester1",
+                        "email": "test1@gmail.com",
+                        "fullname": "Test User1",
+                        "phoneNumber": "1111111111",
+                        "role": "user",
+                        "password": "hashedpass1"
+                    }
+                ]
+            }
+            """;
+
+        Files.writeString(tempFile.toPath(), json);
+
+        // Subclass or inject the path
+        UserLogin login = new UserLogin() {{
+            userData = tempFile.getAbsolutePath();
+        }};
+
+        UserList result = login.getUserData();
+        assertNotNull(result);
+        assertEquals("tester1", result.getUsers().get(0).getUsername());
+    }
+
+    @Test
+    public void testGetUserData_FileNotFoundTriggersCatch() {
+        UserLogin login = new UserLogin() {{
+            userData = "nonexistent/path/users.json"; // This file doesn't exist
+        }};
+
+        // Call the method and expect it to return null due to IOException
+        UserList result = login.getUserData();
+
+        assertNull(result, "Expected null when file is missing");
+    }
 
     @Test
     public void testGetUserRole(){

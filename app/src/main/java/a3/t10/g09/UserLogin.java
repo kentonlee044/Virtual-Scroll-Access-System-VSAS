@@ -12,7 +12,7 @@ public class UserLogin {
     Scanner scanner = new Scanner(System.in);
 
     // Retrieve info from JSON file
-    private String userData = "data/users.json";
+    String userData = "data/users.json";
 
     public UserList getUserData() {
         try (JsonReader reader = new JsonReader(new FileReader(userData))) {
