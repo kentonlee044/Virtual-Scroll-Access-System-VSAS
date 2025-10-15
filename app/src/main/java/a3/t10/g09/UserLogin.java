@@ -26,22 +26,22 @@ public class UserLogin {
 
     public String getUserRole(UserList userList, String username) {
         return userList.getUsers().stream()
-            .filter(user -> user.getUsername().equals(username))
-            .map(User::getRole)
-            .findFirst()
-            .orElse("guest");
+                .filter(user -> user.getUsername().equals(username))
+                .map(User::getRole)
+                .findFirst()
+                .orElse("guest");
     }
 
-    // Methods that interact with the JSON file 
+    // Methods that interact with the JSON file
     public boolean isValidUsername(UserList userList, String username) {
         return userList.getUsers().stream()
-            .anyMatch(user -> user.getUsername().equals(username));
+                .anyMatch(user -> user.getUsername().equals(username));
     }
 
     public boolean isValidUser(UserList userList, String username, String password) {
         return userList.getUsers().stream()
-            .filter(user -> user.getUsername().equals(username))
-            .anyMatch(user -> BCrypt.checkpw(password, user.getPassword()));
+                .filter(user -> user.getUsername().equals(username))
+                .anyMatch(user -> BCrypt.checkpw(password, user.getPassword()));
     }
 
     // Feedback messages
@@ -58,29 +58,30 @@ public class UserLogin {
     }
 
     // User input methods
-    public String inputIDKey(){
+    public String inputIDKey() {
         System.out.println("Please enter your ID key: ");
         String IDkey = scanner.next();
         return IDkey;
     }
 
-    public String inputPassword(){
+    public String inputPassword() {
         System.out.println("Please enter password: ");
         String password = scanner.next();
         return password;
     }
+
     public boolean authenticateUser(UserList userList, String username, String password) {
         // Authenticate user against stored credentials
 
-        if(!this.isValidUsername(userList, username)){
+        if (!this.isValidUsername(userList, username)) {
             System.out.println(this.getUnsuccessfulUsername());
             return false;
         }
-        if(!this.isValidUser(userList, username, password)){
+        if (!this.isValidUser(userList, username, password)) {
             System.out.println(this.getUnsuccessfulPassword());
             return false;
         }
-        
+
         String role = getUserRole(userList, username);
         System.out.println(getSuccessfulLoginMessage());
         System.out.println("Logged in as: " + username + role);
