@@ -5,10 +5,10 @@ import java.util.Scanner;
 public class ProfileUpdateController {
 	private final ProfileUpdateHandler handler;
 	private final Scanner scanner;
-    private UserList users;
+	private UserList users;
 
 	public ProfileUpdateController(User user, UserList users) {
-        this.users = users;
+		this.users = users;
 		this.handler = new ProfileUpdateHandler(user);
 		this.scanner = new Scanner(System.in);
 	}
@@ -21,7 +21,14 @@ public class ProfileUpdateController {
 		System.out.println("4. Update ID Key");
 		System.out.println("5. Update Password");
 		System.out.print("Enter the number of the option you want to update: ");
-		int choice = scanner.nextInt();
+		String input = scanner.nextLine();
+		int choice;
+		try {
+			choice = Integer.parseInt(input);
+		} catch (NumberFormatException e) {
+			System.out.println("Invalid option. Please try again.");
+			return;
+		}
 		switch (choice) {
 			case 1:
 				handler.updateEmail();
@@ -43,4 +50,3 @@ public class ProfileUpdateController {
 		}
 	}
 }
-
