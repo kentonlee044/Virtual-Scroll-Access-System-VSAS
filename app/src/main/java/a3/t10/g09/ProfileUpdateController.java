@@ -21,7 +21,11 @@ public class ProfileUpdateController {
 		System.out.println("4. Update ID Key");
 		System.out.println("5. Update Password");
 		System.out.print("Enter the number of the option you want to update: ");
-		String input = scanner.nextLine();
+		if (!scanner.hasNextLine()) {
+			System.out.println("No input detected. Exiting profile update menu.");
+			return;
+		}
+		String input = scanner.nextLine().trim();
 		int choice;
 		try {
 			choice = Integer.parseInt(input);
