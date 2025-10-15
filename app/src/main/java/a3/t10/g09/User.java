@@ -41,4 +41,36 @@ public class User {
     public String getPassword() { 
         return password; 
     }
+
+    // Setters
+    public void setIdkey(String idkey) { 
+        this.idkey = idkey;
+    }
+
+    public void setUsername(String username) { 
+        this.username = username; 
+    }
+
+    public void setEmail(String email) {
+        this.email = email; 
+    }
+
+    public void setFullname(String fullname) {
+        this.fullname = fullname; 
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
+    public void setRole(String role) { 
+        this.role = role; 
+    }
+
+    public void setPassword(String password) { 
+        UserRegistration userRegistration = new UserRegistration();
+        // Hash the password before storing it
+        password = userRegistration.hashPassword(password);
+        this.password = password;
+    }
 }
