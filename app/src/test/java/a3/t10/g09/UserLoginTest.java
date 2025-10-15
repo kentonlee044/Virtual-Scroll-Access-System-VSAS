@@ -1,16 +1,15 @@
 package a3.t10.g09;
 
 import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import a3.t10.g09.Registration.UserRegistration;
-
-import java.io.IOException;
-import java.io.File;
-import java.nio.file.Files;
 
 public class UserLoginTest {
     private UserList userList;
@@ -20,173 +19,125 @@ public class UserLoginTest {
     public void setUp() {
         userList = new UserList();
         UserRegistration rego = new UserRegistration();
-        User user1 = new User("1", "tester1", "test1@gmail.com", "Test User1", "1111111111", "user",
-                rego.hashPassword("password1"));
 
-        User user2 = new User("2", "tester2", "test2@gmail.com", "Test User2", "2222222222", "user",
-                rego.hashPassword("password2"));
-
-        User user3 = new User("3", "tester3", "test3@gmail.com", "Test User3", "3333333333", "user",
-                rego.hashPassword("password3"));
-
-        User admin1 = new User("4", "tester4", "test4@gmail.com", "Test Admin4", "4444444444", "admin",
-                rego.hashPassword("password4"));
-
-        User random1 = new User("5", "tester5", "test5@gmail.com", "Test random5", "5555555555", "random",
-                rego.hashPassword("password5"));
-
-        userList.addUser(user1);
-        userList.addUser(user2);
-        userList.addUser(user3);
-        userList.addUser(admin1);
-        userList.addUser(random1);
+        userList.addUser(new User("tester1", "Test User1", "1111111111", "test1@gmail.com",
+                rego.hashPassword("password1")));
+        userList.addUser(new User("tester2", "Test User2", "2222222222", "test2@gmail.com",
+                rego.hashPassword("password2")));
+        userList.addUser(new User("tester3", "Test User3", "3333333333", "test3@gmail.com",
+                rego.hashPassword("password3")));
+        userList.addUser(new User("tester4", "Test Admin4", "4444444444", "test4@gmail.com",
+                rego.hashPassword("password4")));
+        userList.addUser(new User("tester5", "Test random5", "5555555555", "test5@gmail.com",
+                rego.hashPassword("password5")));
     }
 
     @Test
-    public void testGetUserData() throws IOException {
-        File tempFile = File.createTempFile("test-users", ".json");
-        tempFile.deleteOnExit();
+    public void testGetUserData() throws Exception {
+        Path tempFile = Files.createTempFile("test-users", ".json");
+        tempFile.toFile().deleteOnExit();
 
         String json = """
                 {
                     "users": [
                         {
-                            "idkey": "1",
-                            "username": "tester1",
-                            "email": "test1@gmail.com",
+                            "idkey": "tester1",
                             "fullname": "Test User1",
-                            "phoneNumber": "1111111111",
-                            "role": "user",
+                            "phone": "1111111111",
+                            "email": "test1@gmail.com",
                             "password": "hashedpass1"
                         }
                     ]
                 }
                 """;
 
-        Files.writeString(tempFile.toPath(), json);
+        Files.writeString(tempFile, json);
 
-        // Subclass or inject the path
-        UserLogin login = new UserLogin() {
-            {
-                userData = tempFile.getAbsolutePath();
-            }
-        };
+        UserLogin login = new UserLogin(tempFile.toString());
 
         UserList result = login.getUserData();
         assertNotNull(result);
-        assertEquals("tester1", result.getUsers().get(0).getUsername());
+        assertEquals(1, result.getUsers().size());
+        assertEquals("tester1", result.getUsers().get(0).getIdkey());
     }
 
     @Test
-    public void testGetUserData_FileNotFoundTriggersCatch() {
-        UserLogin login = new UserLogin() {
-            {
-                userData = "nonexistent/path/users.json"; // This file doesn't exist
-            }
-        };
+    public void testGetUserData_FileNotFoundReturnsEmptyList() {
+        UserLogin login = new UserLogin("nonexistent/path/users.json");
 
-        // Call the method and expect it to return null due to IOException
         UserList result = login.getUserData();
 
-        assertNull(result, "Expected null when file is missing");
+        assertNotNull(result);
+        assertTrue(result.getUsers().isEmpty(), "Expected empty list when file is missing");
     }
 
     @Test
-    public void testGetUserRole() {
+    public void testIsValidIdKey() {
         login = new UserLogin();
-        String role = login.getUserRole(userList, "tester1");
-        assertEquals("user", role);
-    }
-
-    @Test
-    public void testIsValidUsername() {
-        login = new UserLogin();
-        boolean isValid = login.isValidUsername(userList, "tester2");
-        assertEquals(true, isValid);
+        assertTrue(login.isValidIdKey(userList, "tester2"));
     }
 
     @Test
     public void testGetSuccessfulLoginMessage() {
         login = new UserLogin();
-        String message = login.getSuccessfulLoginMessage();
-        assertEquals("User Login Successful! Directing to Dashboard...", message);
+        assertEquals("User Login Successful! Directing to Dashboard...", login.getSuccessfulLoginMessage());
     }
 
     @Test
-    public void testGetUnsuccessfulUsername() {
+    public void testGetUnsuccessfulIdKey() {
         login = new UserLogin();
-        String message = login.getUnsuccessfulUsername();
-        assertEquals("ID key not found. Please check your credentials and try again.", message);
+        assertEquals("ID key not found. Please check your credentials and try again.", login.getUnsuccessfulIdKey());
     }
 
     @Test
     public void testGetUnsuccessfulPassword() {
         login = new UserLogin();
-        String message = login.getUnsuccessfulPassword();
-        assertEquals("Incorrect password. Please try again.", message);
+        assertEquals("Incorrect password. Please try again.", login.getUnsuccessfulPassword());
     }
 
     @Test
     public void testInputIDKey() {
-        // Simulate user input: "ABC123\n"
-        String simulatedInput = "ABC123\n";
-        ByteArrayInputStream inputStream = new ByteArrayInputStream(simulatedInput.getBytes());
-        System.setIn(inputStream); // Redirect System.in
+        InputStream originalIn = System.in;
+        try {
+            String simulatedInput = "ABC123\n";
+            System.setIn(new ByteArrayInputStream(simulatedInput.getBytes()));
 
-        login = new UserLogin();
-        String result = login.inputIDKey();
-
-        assertEquals("ABC123", result);
-
-        System.setIn(System.in); // Reset System.in to its original state
+            login = new UserLogin();
+            assertEquals("ABC123", login.inputIDKey());
+        } finally {
+            System.setIn(originalIn);
+        }
     }
 
     @Test
     public void testInputPassword() {
-        String simulatedPW = "ILoveCS\n";
-        ByteArrayInputStream inputStream = new ByteArrayInputStream(simulatedPW.getBytes());
-        System.setIn(inputStream); // Redirect System.in
+        InputStream originalIn = System.in;
+        try {
+            String simulatedPW = "ILoveCS\n";
+            System.setIn(new ByteArrayInputStream(simulatedPW.getBytes()));
 
-        login = new UserLogin();
-        String result = login.inputPassword();
-
-        assertEquals("ILoveCS", result);
-
-        System.setIn(System.in); // Reset System.in to its original state
+            login = new UserLogin();
+            assertEquals("ILoveCS", login.inputPassword());
+        } finally {
+            System.setIn(originalIn);
+        }
     }
 
     @Test
-    public void testAuthenticateUserInvalidUsername() {
+    public void testAuthenticateUserInvalidIdKey() {
         login = new UserLogin();
-        boolean isAuthenticated = login.authenticateUser(userList, "wronguser", "password3");
-        assertEquals(false, isAuthenticated);
+        assertFalse(login.authenticateUser(userList, "wronguser", "password3"));
     }
 
     @Test
     public void testAuthenticateUserInvalidPassword() {
         login = new UserLogin();
-        boolean isAuthenticated = login.authenticateUser(userList, "tester3", "wrongpassword");
-        assertEquals(false, isAuthenticated);
+        assertFalse(login.authenticateUser(userList, "tester3", "wrongpassword"));
     }
 
     @Test
-    public void testAuthenticateUserRole() {
+    public void testAuthenticateUserSuccess() {
         login = new UserLogin();
-        boolean isAuthenticated = login.authenticateUser(userList, "tester3", "password3");
-        assertEquals(true, isAuthenticated);
-    }
-
-    @Test
-    public void testAuthenticateAdminRole() {
-        login = new UserLogin();
-        boolean isAuthenticated = login.authenticateUser(userList, "tester4", "password4");
-        assertEquals(true, isAuthenticated);
-    }
-
-    @Test
-    public void testInvalidRole() {
-        login = new UserLogin();
-        boolean isAuthenticated = login.authenticateUser(userList, "tester5", "password5");
-        assertEquals(true, isAuthenticated);
+        assertTrue(login.authenticateUser(userList, "tester3", "password3"));
     }
 }
