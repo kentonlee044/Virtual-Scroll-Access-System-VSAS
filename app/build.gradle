@@ -55,3 +55,9 @@ jacocoTestReport {
         csv.required = false
     }
 }
+
+
+tasks.named('run') {
+    // Enable standard input for Scanner
+    standardInput = System.in
+}
