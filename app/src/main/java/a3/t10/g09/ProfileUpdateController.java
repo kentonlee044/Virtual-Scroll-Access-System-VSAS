@@ -1,6 +1,7 @@
 package a3.t10.g09;
 
 import java.util.Scanner;
+import a3.t10.g09.Registration.UserRegistration;
 
 public class ProfileUpdateController {
 	private final ProfileUpdateHandler handler;
@@ -52,5 +53,8 @@ public class ProfileUpdateController {
 			default:
 				System.out.println("Invalid option. Please try again.");
 		}
+		//finally, save the updated user list to the JSON file
+		UserRegistration registration = new UserRegistration();
+		registration.saveUsers(users);
 	}
 }
