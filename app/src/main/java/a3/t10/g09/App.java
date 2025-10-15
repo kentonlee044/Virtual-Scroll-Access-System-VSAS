@@ -12,11 +12,7 @@ public class App {
 
         // RegisterCli.main(args);
 
-        User user = new User("John Doe", "1234567890", "", "", "", "", "");
         UserList users = new UserList();
-        users.addUser(user);
-        ProfileUpdateController controller = new ProfileUpdateController(user, users);
-        controller.displayMenu();
 
     }
 }
