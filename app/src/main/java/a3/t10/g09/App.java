@@ -3,13 +3,14 @@
  */
 package a3.t10.g09;
 
+import a3.t10.g09.Registration.RegisterCli;
+
 public class App {
-    public String getGreeting() {
-        return "Hello World!";
-    }
 
     public static void main(String[] args) {
-        System.out.println(new App().getGreeting());
+        new MainMenu().run();
+
+        // RegisterCli.main(args);
 
         User user = new User("John Doe", "1234567890", "", "", "", "", "");
         UserList users = new UserList();
