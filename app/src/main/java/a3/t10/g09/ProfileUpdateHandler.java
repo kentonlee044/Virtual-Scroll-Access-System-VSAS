@@ -11,6 +11,8 @@ import a3.t10.g09.validator.IDKeyFormatValidator;
 import a3.t10.g09.validator.IDKeyUniqueValidator;
 import java.util.Scanner;
 
+import org.mindrot.jbcrypt.BCrypt;
+
 public class ProfileUpdateHandler {
     private final Scanner scanner = new Scanner(System.in);
     private User user;
@@ -104,8 +106,8 @@ public class ProfileUpdateHandler {
         System.out.print("Enter current password: ");
         String currPass = scanner.nextLine();
 
-        //validate current password
-        if (!currPass.equals(user.getPassword())) {
+        //validate current password with bcrypt
+        if (!BCrypt.checkpw(currPass, user.getPassword())) {
             System.out.println("Current password is incorrect.");
             return;
         }
