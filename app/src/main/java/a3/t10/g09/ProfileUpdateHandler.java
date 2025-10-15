@@ -4,6 +4,9 @@ import a3.t10.g09.validator.DomainDotValidator;
 import a3.t10.g09.validator.PhoneLengthValidator;
 import a3.t10.g09.validator.PhoneDigitValidator;
 import a3.t10.g09.validator.NameValidator;
+import a3.t10.g09.validator.PasswordDigitValidator;
+import a3.t10.g09.validator.PasswordLengthValidator;
+import a3.t10.g09.validator.PasswordUppercaseValidator;
 import a3.t10.g09.validator.IDKeyFormatValidator;
 import a3.t10.g09.validator.IDKeyUniqueValidator;
 import java.util.Scanner;
@@ -98,6 +101,38 @@ public class ProfileUpdateHandler {
     }
 
     public void updatePassword() {
+        System.out.print("Enter current password: ");
+        String currPass = scanner.nextLine();
+
+        //validate current password
+        if (!currPass.equals(user.getPassword())) {
+            System.out.println("Current password is incorrect.");
+            return;
+        }
+
+        //get new password
+        System.out.print("Enter new password: ");
+        String newPass = scanner.nextLine();
+
+        PasswordDigitValidator digitValidator = new PasswordDigitValidator();
+        PasswordLengthValidator lengthValidator = new PasswordLengthValidator();
+        PasswordUppercaseValidator uppercaseValidator = new PasswordUppercaseValidator();
+        String result_1 = digitValidator.validate(newPass);
+        String result_2 = lengthValidator.validate(newPass);
+        String result_3 = uppercaseValidator.validate(newPass);
+        if(result_1 != null){
+            System.out.println(result_1);
+            return;
+        }
+        if(result_2 != null){
+            System.out.println(result_2);
+            return;
+        }
+        if(result_3 != null){
+            System.out.println(result_3);
+            return;
+        }
         //TODO
+        System.out.println("Password is valid. (Storage update not implemented yet)");
     }
 }
