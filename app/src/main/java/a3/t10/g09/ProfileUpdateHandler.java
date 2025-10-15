@@ -38,10 +38,9 @@ public class ProfileUpdateHandler {
             System.out.println(result_2);
             return;
         }
-        //TODO
-        // If all validators pass
-        System.out.println("Phone number is valid. (Storage update not implemented yet)");
 
+        // If all validators pass, we update the user object in UserList
+        user.setPhoneNumber(newPhone);
     }
 
     public void updateEmail(){
@@ -61,9 +60,8 @@ public class ProfileUpdateHandler {
             System.out.println(result_2);
             return;
         }
-        //TODO
-        // If all validators pass
-        System.out.println("Email is valid. (Storage update not implemented yet)");
+        //if all validators pass, we update the user object in UserList
+        user.setEmail(newEmail);
     }
 
     public void updateName(){
@@ -77,8 +75,8 @@ public class ProfileUpdateHandler {
             System.out.println(result);
             return;
         }
-        //TODO
-        System.out.println("Name is valid. (Storage update not implemented yet)");
+        // If validator passes, we update the user object in UserList
+        user.setFullname(newName);
     }
 
     public void updateIDKey(UserList userList) {
@@ -98,8 +96,8 @@ public class ProfileUpdateHandler {
             System.out.println(result_2);
             return;
         }
-        //TODO
-        System.out.println("ID key is valid. (Storage update not implemented yet)");
+        // If all validators pass, we update the user object in UserList
+        user.setIdkey(newIDKey);
     }
 
     public void updatePassword() {
@@ -134,7 +132,7 @@ public class ProfileUpdateHandler {
             System.out.println(result_3);
             return;
         }
-        //TODO
-        System.out.println("Password is valid. (Storage update not implemented yet)");
+        // If all validators pass, we update the user object in UserList
+        user.setPassword(newPass);
     }
 }
