@@ -5,16 +5,26 @@ import java.util.Scanner;
 import a3.t10.g09.Login.UserLogin;
 
 public class CommandMenu {
-    private final Scanner scanner = new Scanner(System.in);
-    private final UserLogin userLogin = new UserLogin();
+    private final Scanner scanner;
+    private final UserLogin userLogin;
+
+    public CommandMenu(Scanner scanner) {
+        this(scanner, new UserLogin(scanner));
+    }
+
+    CommandMenu(Scanner scanner, UserLogin userLogin) {
+        this.scanner = scanner;
+        this.userLogin = userLogin;
+    }
 
     public void runGuest() {
         boolean running = true;
         while (running) {
             printGuestMenu();
             String choice = readChoice();
-            if (choice == null)
+            if (choice == null) {
                 return;
+            }
             switch (choice) {
                 case "1" -> System.out.println("Guests cannot update profiles.");
                 case "2" -> running = false;
@@ -121,6 +131,7 @@ public class CommandMenu {
         System.out.println("└──────────────────────────────────┘");
         System.out.print("Select an option: ");
     }
+
 
     private String readChoice() {
         if (!scanner.hasNextLine()) {

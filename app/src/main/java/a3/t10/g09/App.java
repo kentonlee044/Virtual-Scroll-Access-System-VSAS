@@ -66,7 +66,9 @@ public class App {
 
     public static void main(String[] args) {
         // testProfileUpdateUI();
-        new MainMenu().run();
+        try (Scanner scanner = new Scanner(System.in)) {
+            new MainMenu(scanner).run();
+        }
         // boolean isRunning = true;
         // Scanner sc = new Scanner(System.in);
         // while (isRunning) {

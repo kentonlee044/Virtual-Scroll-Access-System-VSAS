@@ -21,11 +21,15 @@ public class UserLogin {
         this(DEFAULT_USER_DATA, new Scanner(System.in));
     }
 
+    public UserLogin(Scanner scanner) {
+        this(DEFAULT_USER_DATA, scanner);
+    }
+
     public UserLogin(String userDataPath) {
         this(userDataPath, new Scanner(System.in));
     }
 
-    UserLogin(String userDataPath, Scanner scanner) {
+    public UserLogin(String userDataPath, Scanner scanner) {
         this.userDataPath = userDataPath;
         this.scanner = scanner;
     }
