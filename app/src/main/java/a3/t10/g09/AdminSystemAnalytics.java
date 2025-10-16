@@ -59,7 +59,7 @@ public class AdminSystemAnalytics {
         }
     }
     
-    private void displayAllScrolls() {
+    public void displayAllScrolls() {
         ensureScrollsLoaded();
         displayScrolls(scrollList.getAllScrolls(), "ALL SCROLLS");
     }
