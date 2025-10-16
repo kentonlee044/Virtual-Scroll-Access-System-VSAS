@@ -115,7 +115,7 @@ public class CommandMenu {
 
     private void printUserMenu(User user) {
         System.out.println("\n┌──────── User Commands ──────────┐");
-        System.out.println("│ Logged in as: " + user.getFullname());
+        System.out.println("│ Logged in as a generic user: " + user.getFullname());
         System.out.println("│ 1) Update user profile           │");
         System.out.println("│ 2) Logout                        │");
         System.out.println("└──────────────────────────────────┘");
@@ -124,7 +124,7 @@ public class CommandMenu {
 
     private void printAdminMenu(User user) {
         System.out.println("\n┌──────── Admin Commands ─────────┐");
-        System.out.println("│ Logged in as: " + user.getFullname());
+        System.out.println("│ Logged in as an admin: " + user.getFullname());
         System.out.println("│ 1) Update user profile           │");
         System.out.println("│ 2) Logout                        │");
         System.out.println("│ 3) User management               │");
