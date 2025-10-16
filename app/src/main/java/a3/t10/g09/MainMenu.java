@@ -25,15 +25,13 @@ public class MainMenu {
 
                 switch (choice) {
                     case 1 -> {
-                        new LoginCli().run();
+                        User loggedIn = new LoginCli().run();
+                        if (loggedIn != null) {
+                            new CommandMenu().runFor(loggedIn);
+                        }
                     }
-                    case 2 -> {
-                        RegisterCli.main(new String[0]);
-                    }
-                    case 3 -> {
-                        System.out.println("Continuing as Guest...\n");
-                        // TODO: guest flow
-                    }
+                    case 2 -> RegisterCli.main(new String[0]);
+                    case 3 -> new CommandMenu().runGuest();
                     case 0 -> {
                         System.out.println("Goodbye.");
                         return;
