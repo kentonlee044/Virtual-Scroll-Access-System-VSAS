@@ -16,29 +16,37 @@ public class ProfileUpdateUI {
 
     
     private String displayBox(String title, String prompt, String currentValue, boolean showError) {
-        // Create a line of dashes for the box border
-        String border = "+" + "-".repeat(38) + "+";
+        // Create the box borders (58 characters wide to account for borders and padding)
+        String topBorder = "┌" + "─".repeat(56) + "┐";
+        String middleBorder = "├" + "─".repeat(56) + "┤";
+        String bottomBorder = "└" + "─".repeat(56) + "┘";
         
-        System.out.println("\n" + border);
+        System.out.println("\n" + topBorder);
         
         // Center the title
-        int padding = (36 - title.length()) / 2;
-        String centeredTitle = " ".repeat(Math.max(0, padding)) + title + " ".repeat(Math.max(0, 36 - title.length() - padding));
-        System.out.println("| " + centeredTitle + " |");
-        System.out.println(border);
+        int padding = (56 - title.length()) / 2;
+        String centeredTitle = " ".repeat(padding) + title + " ".repeat(56 - title.length() - padding);
+        System.out.println("│" + centeredTitle + "│");
+        
+        // Add middle border after title
+        System.out.println(middleBorder);
         
         // Display current value if provided
         if (currentValue != null && !currentValue.isEmpty()) {
-            System.out.println("| Current: " + currentValue + " ".repeat(28 - currentValue.length()) + " |");
-            System.out.println(border);
+            String currentLine = "│ Current: " + currentValue;
+            currentLine += " ".repeat(55 - currentLine.length()) + "│";
+            System.out.println(currentLine);
+            System.out.println(middleBorder);
         }
         
         // Show prompt and get input
-        System.out.print("| " + prompt + " ");
+        String promptLine = "│ " + prompt;
+        System.out.print(promptLine + " ".repeat(56 - promptLine.length() - 1) + "│\n│ ");
         String input = scanner.nextLine().trim();
         
         // Close the box
-        System.out.println(border);
+        System.out.println(bottomBorder);
+        System.out.println();
         
         return input;
     }
