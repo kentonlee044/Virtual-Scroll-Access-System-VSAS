@@ -8,6 +8,7 @@ import a3.t10.g09.Login.UserLogin;
 public class CommandMenu {
     private final Scanner scanner;
     private final UserLogin userLogin;
+    private final AdminUserManagement adminMgmt; // new
 
     public CommandMenu(Scanner scanner) {
         this(scanner, new UserLogin(scanner));
@@ -16,6 +17,7 @@ public class CommandMenu {
     CommandMenu(Scanner scanner, UserLogin userLogin) {
         this.scanner = scanner;
         this.userLogin = userLogin;
+        this.adminMgmt = new AdminUserManagement(scanner); // new
     }
 
     public void runGuest() {
@@ -55,7 +57,7 @@ public class CommandMenu {
                 case "2" -> running = false;
                 case "3" -> {
                     if (isAdmin) {
-                        showUserManagement();
+                        adminMgmt.run(user); // delegate to new class
                     } else {
                         System.out.println("Invalid option.");
                     }
@@ -76,31 +78,6 @@ public class CommandMenu {
         UserList userList = userLogin.getUserData();
         ProfileUpdateController controller = new ProfileUpdateController(user, userList);
         controller.displayMenu();
-    }
-
-    private void showUserManagement() {
-        boolean managing = true;
-        while (managing) {
-            System.out.println("\n┌──────── User Management ────────┐");
-            System.out.println("│ 1) View users                    │");
-            System.out.println("│ 2) Add/Delete users (stub)       │");
-            System.out.println("│ 3) Promote/Demote users (stub)   │");
-            System.out.println("│ 4) View scroll analytics         │");
-            System.out.println("│ 0) Back                          │");
-            System.out.println("└──────────────────────────────────┘");
-            System.out.print("Select an option: ");
-            String choice = readChoice();
-            if (choice == null)
-                return;
-            switch (choice) {
-                case "1" -> System.out.println("TODO: list users.");
-                case "2" -> System.out.println("TODO: add/delete users.");
-                case "3" -> System.out.println("TODO: promote/demote users.");
-                case "4" -> showScrollStats();
-                case "0" -> managing = false;
-                default -> System.out.println("Invalid option.");
-            }
-        }
     }
 
     private void showScrollStats() {
