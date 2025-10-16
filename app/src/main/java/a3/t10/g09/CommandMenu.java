@@ -85,6 +85,7 @@ public class CommandMenu {
             System.out.println("│ 1) View users                    │");
             System.out.println("│ 2) Add/Delete users (stub)       │");
             System.out.println("│ 3) Promote/Demote users (stub)   │");
+            System.out.println("│ 4) View scroll analytics         │");
             System.out.println("│ 0) Back                          │");
             System.out.println("└──────────────────────────────────┘");
             System.out.print("Select an option: ");
@@ -95,6 +96,7 @@ public class CommandMenu {
                 case "1" -> System.out.println("TODO: list users.");
                 case "2" -> System.out.println("TODO: add/delete users.");
                 case "3" -> System.out.println("TODO: promote/demote users.");
+                case "4" -> showScrollStats();
                 case "0" -> managing = false;
                 default -> System.out.println("Invalid option.");
             }
@@ -102,7 +104,7 @@ public class CommandMenu {
     }
 
     private void showScrollStats() {
-        System.out.println("TODO: display scroll statistics.");
+        new AdminSystemAnalytics().displayAnalytics();
     }
 
     private void printGuestMenu() {
