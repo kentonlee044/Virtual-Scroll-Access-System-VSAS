@@ -11,7 +11,7 @@ import java.util.Scanner;
 
 public class UserLogin {
 
-    private static final String DEFAULT_USER_DATA = "src/main/java/a3/t10/g09/data/users.json";
+    private static final String DEFAULT_USER_DATA = "app/src/main/java/a3/t10/g09/data/users.json";
 
     private final String userDataPath;
     private final Gson gson = new Gson();
@@ -40,9 +40,15 @@ public class UserLogin {
         }
     }
 
-    public boolean isValidIdKey(UserList userList, String idKey) {
+    public User findUser(UserList userList, String idKey) {
         return userList.getUsers().stream()
-                .anyMatch(user -> user.getIdkey().equals(idKey));
+                .filter(user -> user.getIdkey().equals(idKey))
+                .findFirst()
+                .orElse(null);
+    }
+
+    public boolean isValidIdKey(UserList userList, String idKey) {
+        return findUser(userList, idKey) != null;
     }
 
     public boolean isValidUser(UserList userList, String idKey, String password) {
@@ -75,14 +81,15 @@ public class UserLogin {
 
     public AuthenticationResult authenticate(String idKey, String password) {
         UserList users = getUserData();
+        User matched = findUser(users, idKey);
 
-        if (!isValidIdKey(users, idKey)) {
+        if (matched == null) {
             return AuthenticationResult.failed(getUnsuccessfulIdKey());
         }
         if (!isValidUser(users, idKey, password)) {
             return AuthenticationResult.failed(getUnsuccessfulPassword());
         }
-        return AuthenticationResult.success(getSuccessfulLoginMessage());
+        return AuthenticationResult.success(matched, getSuccessfulLoginMessage());
     }
 
     public boolean authenticateUser(UserList userList, String idKey, String password) {
@@ -102,23 +109,29 @@ public class UserLogin {
 
     public static final class AuthenticationResult {
         private final boolean success;
+        private final User user;
         private final String message;
 
-        private AuthenticationResult(boolean success, String message) {
+        private AuthenticationResult(boolean success, User user, String message) {
             this.success = success;
+            this.user = user;
             this.message = message;
         }
 
-        public static AuthenticationResult success(String message) {
-            return new AuthenticationResult(true, message);
+        public static AuthenticationResult success(User user, String message) {
+            return new AuthenticationResult(true, user, message);
         }
 
         public static AuthenticationResult failed(String message) {
-            return new AuthenticationResult(false, message);
+            return new AuthenticationResult(false, null, message);
         }
 
         public boolean isSuccess() {
             return success;
+        }
+
+        public User getUser() {
+            return user;
         }
 
         public String getMessage() {

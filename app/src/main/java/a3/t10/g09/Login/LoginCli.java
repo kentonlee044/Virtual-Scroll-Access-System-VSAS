@@ -3,9 +3,8 @@ package a3.t10.g09.Login;
 import java.io.Console;
 import java.util.Scanner;
 
-import a3.t10.g09.UserList;
+import a3.t10.g09.User;
 
-// Login
 public class LoginCli {
     private static final String CLEAR_SCREEN = "\033[H\033[2J";
     private static final int BOX_WIDTH = 70;
@@ -15,38 +14,32 @@ public class LoginCli {
 
     private final UserLogin login = new UserLogin();
 
-    public void run() {
+    public User run() {
         Console console = System.console();
 
         try (Scanner scanner = new Scanner(System.in)) {
             while (true) {
                 String idKey = promptIdKey(scanner);
                 if (idKey == null) {
-                    return;
+                    return null;
                 }
 
                 String password = promptPassword(scanner, console, idKey);
                 if (password == null) {
-                    return;
+                    return null;
                 }
 
-                UserList users = login.getUserData();
+                UserLogin.AuthenticationResult result = login.authenticate(idKey, password);
 
-                if (!login.isValidIdKey(users, idKey)) {
-                    renderForm(login.getUnsuccessfulIdKey(), "Press Enter to try again", idKey, "");
+                if (!result.isSuccess()) {
+                    renderForm(result.getMessage(), "Press Enter to try again", idKey, "");
                     waitForEnter(scanner);
                     continue;
                 }
 
-                if (!login.isValidUser(users, idKey, password)) {
-                    renderForm(login.getUnsuccessfulPassword(), "Press Enter to try again", idKey, "");
-                    waitForEnter(scanner);
-                    continue;
-                }
-
-                renderForm(login.getSuccessfulLoginMessage(), "Press Enter to continue", idKey, password);
+                renderForm(result.getMessage(), "Press Enter to continue", idKey, password);
                 waitForEnter(scanner);
-                return;
+                return result.getUser();
             }
         }
     }
