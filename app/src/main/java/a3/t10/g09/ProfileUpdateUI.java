@@ -48,12 +48,11 @@ public class ProfileUpdateUI {
         String currentPhone = user.getPhone();
         
         do {
-            String newPhone = displayBox("UPDATE PHONE NUMBER", "Enter new phone number:", currentPhone, errorMessage != null);
-            
-            // Show error message if any
             if (errorMessage != null) {
                 System.out.println("\u001B[31m" + errorMessage + "\u001B[0m");
             }
+            
+            String newPhone = displayBox("UPDATE PHONE NUMBER", "Enter new phone number:", currentPhone, errorMessage != null);
             
             // Call the handler and get the result
             errorMessage = updateHandler.updatePhoneNumber(newPhone);
@@ -70,12 +69,11 @@ public class ProfileUpdateUI {
         String currentEmail = user.getEmail();
         
         do {
-            String newEmail = displayBox("UPDATE EMAIL", "Enter new email:", currentEmail, errorMessage != null);
-            
-            // Show error message if any
             if (errorMessage != null) {
                 System.out.println("\u001B[31m" + errorMessage + "\u001B[0m");
             }
+            
+            String newEmail = displayBox("UPDATE EMAIL", "Enter new email:", currentEmail, errorMessage != null);
             
             // Call the handler and get the result
             errorMessage = updateHandler.updateEmail(newEmail);
@@ -84,7 +82,6 @@ public class ProfileUpdateUI {
                 System.out.println("\nEmail updated successfully.");
                 return;
             }
-
         } while (true);
     }
 
@@ -93,12 +90,11 @@ public class ProfileUpdateUI {
         String currentName = user.getFullname();
         
         do {
-            String newName = displayBox("UPDATE NAME", "Enter new name:", currentName, errorMessage != null);
-            
-            // Show error message if any
             if (errorMessage != null) {
                 System.out.println("\u001B[31m" + errorMessage + "\u001B[0m");
             }
+            
+            String newName = displayBox("UPDATE NAME", "Enter new name:", currentName, errorMessage != null);
             
             // Call the handler and get the result
             errorMessage = updateHandler.updateName(newName);
@@ -107,8 +103,6 @@ public class ProfileUpdateUI {
                 System.out.println("\nName updated successfully.");
                 return;
             }
-            
-
         } while (true);
     }
 
@@ -117,12 +111,11 @@ public class ProfileUpdateUI {
         String currentIDKey = user.getIdkey();
         
         do {
-            String newIDKey = displayBox("UPDATE ID KEY", "Enter new ID key:", currentIDKey, errorMessage != null);
-            
-            // Show error message if any
             if (errorMessage != null) {
                 System.out.println("\u001B[31m" + errorMessage + "\u001B[0m");
             }
+            
+            String newIDKey = displayBox("UPDATE ID KEY", "Enter new ID key:", currentIDKey, errorMessage != null);
             
             // Call the handler and get the result
             String result = updateHandler.updateIDKey(newIDKey);
@@ -133,7 +126,6 @@ public class ProfileUpdateUI {
             }
 
             errorMessage = result;
-            
         } while (true);
     }
 
@@ -141,12 +133,25 @@ public class ProfileUpdateUI {
         String errorMessage = null;
         
         do {
+            if (errorMessage != null) {
+                System.out.println("\u001B[31m" + errorMessage + "\u001B[0m");
+            }
+            
             // First, get current password
             String currentPassword = displayBox("UPDATE PASSWORD", "Enter current password:", "", errorMessage != null && errorMessage.startsWith("Current password"));
             
-            // Show error message if any (for current password)
-            if (errorMessage != null && errorMessage.startsWith("Current password")) {
-                System.out.println("\u001B[31m" + errorMessage + "\u001B[0m");
+            // If we have an error and it's not about the current password, continue to new password input
+            if (errorMessage != null && !errorMessage.startsWith("Current password")) {
+                // Get the new password (only once)
+                String newPassword = displayBox("UPDATE PASSWORD", "Enter new password:", "", true);
+                
+                // Call the handler with current and new password (no confirm password)
+                errorMessage = updateHandler.updatePassword(currentPassword, newPassword);
+                
+                if (errorMessage == null) {
+                    System.out.println("\nPassword updated successfully.");
+                    return;
+                }
                 continue;
             }
             
