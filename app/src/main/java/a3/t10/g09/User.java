@@ -6,14 +6,28 @@ public class User {
     private String phone; // Phone number of the user
     private String email; // Unique email address
     private String password; // Hashed password
+    private String role;
 
     // Constructor
     public User(String idkey, String fullname, String phone, String email, String password) {
+        this(idkey, fullname, phone, email, "user", password);
+    }
+
+    public User(String idkey, String fullname, String phone, String email, String role, String password) {
         this.idkey = idkey;
         this.fullname = fullname;
         this.phone = phone;
         this.email = email;
+        this.role = (role == null || role.isBlank()) ? "user" : role;
         this.password = password;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = (role == null || role.isBlank()) ? "user" : role;
     }
 
     // Getters

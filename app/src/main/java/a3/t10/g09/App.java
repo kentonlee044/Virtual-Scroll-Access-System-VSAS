@@ -22,51 +22,51 @@ public class App {
     }
 
     private static void testProfileUpdateUI() {
-        
+
         // Create a test user (password will be hashed in a real scenario)
-       User testUser = new User(
-    "test123",              // idkey
-    "Test User",            // fullname
-    "0412345678",           // phone
-    "test@example.com",     // email
-        BCrypt.hashpw("password123", BCrypt.gensalt())  // hashed password
+        User testUser = new User(
+                "test123", // idkey
+                "Test User", // fullname
+                "0412345678", // phone
+                "test@example.com", // email
+                BCrypt.hashpw("password123", BCrypt.gensalt()) // hashed password
         );
         // Add user to the list
         UserList users = new UserList();
         users.addUser(testUser);
-        
+
         // Create and show the profile update controller
         ProfileUpdateController profileController = new ProfileUpdateController(testUser, users);
         profileController.displayMenu();
         /*
-        // Test each update method
-        System.out.println("Testing Profile Update UI");
-        System.out.println("1. Testing Name Update");
-        profileUI.updateName();
-        
-        System.out.println("\n2. Testing Email Update");
-        profileUI.updateEmail();
-        
-        System.out.println("\n3. Testing Phone Update");
-        profileUI.updatePhoneNumber();
-        
-        System.out.println("\n4. Testing ID Key Update");
-        profileUI.updateIDKey();
-        
-        System.out.println("\n5. Testing Password Update");
-        profileUI.updatePassword();
-        
-        System.out.println("\nTest completed. Updated user details:");
-        System.out.println("Name: " + testUser.getFullname());
-        System.out.println("Email: " + testUser.getEmail());
-        System.out.println("Phone: " + testUser.getPhone());
-        System.out.println("ID Key: " + testUser.getIdkey());
-        */
+         * // Test each update method
+         * System.out.println("Testing Profile Update UI");
+         * System.out.println("1. Testing Name Update");
+         * profileUI.updateName();
+         * 
+         * System.out.println("\n2. Testing Email Update");
+         * profileUI.updateEmail();
+         * 
+         * System.out.println("\n3. Testing Phone Update");
+         * profileUI.updatePhoneNumber();
+         * 
+         * System.out.println("\n4. Testing ID Key Update");
+         * profileUI.updateIDKey();
+         * 
+         * System.out.println("\n5. Testing Password Update");
+         * profileUI.updatePassword();
+         * 
+         * System.out.println("\nTest completed. Updated user details:");
+         * System.out.println("Name: " + testUser.getFullname());
+         * System.out.println("Email: " + testUser.getEmail());
+         * System.out.println("Phone: " + testUser.getPhone());
+         * System.out.println("ID Key: " + testUser.getIdkey());
+         */
     }
 
     public static void main(String[] args) {
-        testProfileUpdateUI();
-        //new MainMenu().run();
+        // testProfileUpdateUI();
+        new MainMenu().run();
         // boolean isRunning = true;
         // Scanner sc = new Scanner(System.in);
         // while (isRunning) {

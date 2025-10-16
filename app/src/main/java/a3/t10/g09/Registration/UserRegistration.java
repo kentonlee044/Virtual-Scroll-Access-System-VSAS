@@ -73,12 +73,12 @@ public class UserRegistration {
         String hashed = hashPassword(password);
 
         User newUser = new User(
-                normIdKey, // id key (unique)
-                name, // full name
-                normPhone, // phone
-                normEmail, // email (unique, stored lower-case)
-                hashed // hashed password
-        );
+                normIdKey,
+                name,
+                normPhone,
+                normEmail,
+                "user",
+                hashed);
 
         users.addUser(newUser);
         saveUsers(users);
