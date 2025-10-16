@@ -14,14 +14,22 @@ public class ProfileUpdateController {
 		this.scanner = new Scanner(System.in);
 	}
 
+	public void printMenu(){
+		System.out.println("┌────────────────────────────────────────────────────────┐");
+		System.out.println("│   User Profile Update Menu                             │");
+		System.out.println("├────────────────────────────────────────────────────────┤");
+		System.out.println("│  1) Update Email                                       │");
+		System.out.println("│  2) Update Phone Number                                │");
+		System.out.println("│  3) Update Name                                        │");
+		System.out.println("│  4) Update ID Key                                      │");
+		System.out.println("│  5) Update Password                                    │");
+		System.out.println("│  0) Exit                                               │");
+		System.out.println("└────────────────────────────────────────────────────────┘");
+		System.out.print("Select an option (0-5): ");
+	}
+
 	public void displayMenu() {
-		System.out.println("Profile Update Menu:");
-		System.out.println("1. Update Email");
-		System.out.println("2. Update Phone Number");
-		System.out.println("3. Update Name");
-		System.out.println("4. Update ID Key");
-		System.out.println("5. Update Password");
-		System.out.print("Enter the number of the option you want to update: ");
+		printMenu();
 		if (!scanner.hasNextLine()) {
 			System.out.println("No input detected. Exiting profile update menu.");
 			return;
@@ -50,6 +58,8 @@ public class ProfileUpdateController {
 			case 5:
 				ui.updatePassword();
 				break;
+			case 0:
+				return;
 			default:
 				System.out.println("Invalid option. Please try again.");
 		}
