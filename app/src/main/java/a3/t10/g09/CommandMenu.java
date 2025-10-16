@@ -4,6 +4,7 @@ import java.util.Scanner;
 
 import a3.t10.g09.Login.UserLogin;
 
+//
 public class CommandMenu {
     private final Scanner scanner;
     private final UserLogin userLogin;
@@ -131,7 +132,6 @@ public class CommandMenu {
         System.out.println("└──────────────────────────────────┘");
         System.out.print("Select an option: ");
     }
-
 
     private String readChoice() {
         if (!scanner.hasNextLine()) {
