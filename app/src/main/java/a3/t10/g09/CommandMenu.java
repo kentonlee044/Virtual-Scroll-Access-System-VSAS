@@ -31,7 +31,8 @@ public class CommandMenu {
             switch (choice) {
                 case "1" -> System.out.println("Guests cannot update profiles.");
                 case "2" -> running = false;
-                default -> System.out.println("Please choose 1 or 2.");
+                case "3" -> new AdminSystemAnalytics().displayAllScrolls();
+                default -> System.out.println("Please choose 1, 2 or 3.");
             }
         }
     }
@@ -59,7 +60,7 @@ public class CommandMenu {
                     if (isAdmin) {
                         adminMgmt.run(user); // delegate to new class
                     } else {
-                        System.out.println("Invalid option.");
+                        new AdminSystemAnalytics().displayAllScrolls();
                     }
                 }
                 case "4" -> {
@@ -88,6 +89,7 @@ public class CommandMenu {
         System.out.println("\n┌──────── Guest Commands ─────────┐");
         System.out.println("│ 1) Update user profile           │");
         System.out.println("│ 2) Logout                        │");
+        System.out.println("│ 3) View all scrolls              │");
         System.out.println("└──────────────────────────────────┘");
         System.out.print("Select an option: ");
     }
@@ -97,6 +99,7 @@ public class CommandMenu {
         System.out.println("│ Logged in as a generic user: " + user.getFullname());
         System.out.println("│ 1) Update user profile           │");
         System.out.println("│ 2) Logout                        │");
+        System.out.println("│ 3) View all scrolls              │");
         System.out.println("└──────────────────────────────────┘");
         System.out.print("Select an option: ");
     }
