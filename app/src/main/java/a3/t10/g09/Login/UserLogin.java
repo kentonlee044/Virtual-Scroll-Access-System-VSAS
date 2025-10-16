@@ -11,7 +11,7 @@ import java.util.Scanner;
 
 public class UserLogin {
 
-    private static final String DEFAULT_USER_DATA = "app/src/main/java/a3/t10/g09/data/users.json";
+    private static final String DEFAULT_USER_DATA = "src/main/java/a3/t10/g09/data/users.json";
 
     private final String userDataPath;
     private final Gson gson = new Gson();
@@ -21,11 +21,15 @@ public class UserLogin {
         this(DEFAULT_USER_DATA, new Scanner(System.in));
     }
 
+    public UserLogin(Scanner scanner) {
+        this(DEFAULT_USER_DATA, scanner);
+    }
+
     public UserLogin(String userDataPath) {
         this(userDataPath, new Scanner(System.in));
     }
 
-    UserLogin(String userDataPath, Scanner scanner) {
+    public UserLogin(String userDataPath, Scanner scanner) {
         this.userDataPath = userDataPath;
         this.scanner = scanner;
     }

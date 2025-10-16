@@ -16,6 +16,7 @@ import a3.t10.g09.validator.PhoneDigitValidator;
 import a3.t10.g09.validator.PhoneLengthValidator;
 
 public class RegisterCli {
+
     private static final String CLEAR_SCREEN = "\033[H\033[2J";
     private static final int BOX_WIDTH = 70;
     private static final int LABEL_WIDTH = 16;
@@ -23,53 +24,91 @@ public class RegisterCli {
     private static final String INPUT_HINT = "Press Enter to confirm · Ctrl+C to cancel";
     private static final String SUBMIT_HINT = "Press Enter to submit · Ctrl+C to cancel";
 
-    public static void main(String[] args) {
-        var registration = new UserRegistration();
-        Console console = System.console();
+    private final UserRegistration registration;
+    private final Scanner scanner;
+    private final Console console;
 
-        try (Scanner scanner = new Scanner(System.in)) {
-            String fullName = "";
-            String email = "";
-            String idKey = "";
-            String phone = "";
-            String password = "";
+    public RegisterCli(Scanner scanner) {
+        this(scanner, System.console());
+    }
 
-            fullName = promptName(scanner, fullName, email, idKey, phone, password);
-            email = promptEmail(scanner, registration, fullName, email, idKey, phone, password);
-            idKey = promptIdKey(scanner, registration, fullName, email, idKey, phone, password);
-            phone = promptPhone(scanner, fullName, email, idKey, phone, password);
-            password = promptPassword(scanner, console, fullName, email, idKey, phone, password);
+    RegisterCli(Scanner scanner, Console console) {
+        this.registration = new UserRegistration();
+        this.scanner = scanner;
+        this.console = console;
+    }
 
-            renderForm("Review details", SUBMIT_HINT, fullName, email, idKey, phone, password);
-            scanner.nextLine();
+    public void run() {
+        String fullName = "";
+        String email = "";
+        String idKey = "";
+        String phone = "";
+        String password = "";
 
-            var result = registration.register(fullName, email, phone, idKey, password);
+        fullName = promptName(fullName, email, idKey, phone, password);
+        if (fullName == null) {
+            return;
+        }
 
-            if (result.isSuccess()) {
-                renderForm(result.getMessages().get(0), "Press Enter to continue", fullName, email, idKey, phone,
-                        password);
-                scanner.nextLine();
-            } else {
-                renderForm("Registration failed", "See issues below", fullName, email, idKey, phone, password);
-                result.getMessages().forEach(msg -> System.out.println("- " + msg));
-                System.out.println("\nPress Enter to return to the menu...");
-                scanner.nextLine();
-            }
+        email = promptEmail(fullName, email, idKey, phone, password);
+        if (email == null) {
+            return;
+        }
+
+        idKey = promptIdKey(fullName, email, idKey, phone, password);
+        if (idKey == null) {
+            return;
+        }
+
+        phone = promptPhone(fullName, email, idKey, phone, password);
+        if (phone == null) {
+            return;
+        }
+
+        password = promptPassword(fullName, email, idKey, phone, password);
+        if (password == null) {
+            return;
+        }
+
+        renderForm("Review details", SUBMIT_HINT, fullName, email, idKey, phone, password);
+        if (!waitForLine()) {
+            return;
+        }
+
+        var result = registration.register(fullName, email, phone, idKey, password);
+
+        if (result.isSuccess()) {
+            renderForm(result.getMessages().get(0), "Press Enter to continue", fullName, email, idKey, phone, password);
+            waitForLine();
+        } else {
+            renderForm("Registration failed", "See issues below", fullName, email, idKey, phone, password);
+            result.getMessages().forEach(msg -> System.out.println("- " + msg));
+            System.out.println("\nPress Enter to return to the menu...");
+            waitForLine();
         }
     }
 
-    private static String promptName(Scanner scanner,
-                                     String fullName,
-                                     String email,
-                                     String idKey,
-                                     String phone,
-                                     String password) {
+    public static void main(String[] args) {
+        try (Scanner scanner = new Scanner(System.in)) {
+            new RegisterCli(scanner).run();
+        }
+    }
+
+    private String promptName(String fullName,
+            String email,
+            String idKey,
+            String phone,
+            String password) {
         String status = "Enter full name:";
         String candidate = fullName;
         var validator = new NameValidator();
         while (true) {
             renderForm(status, INPUT_HINT, candidate, email, idKey, phone, password);
             System.out.print("> ");
+            if (!scanner.hasNextLine()) {
+                System.out.println("No input detected. Exiting registration.");
+                return null;
+            }
             candidate = scanner.nextLine().trim();
             String error = validator.validate(candidate);
             if (error == null) {
@@ -79,18 +118,20 @@ public class RegisterCli {
         }
     }
 
-    private static String promptEmail(Scanner scanner,
-                                      UserRegistration registration,
-                                      String fullName,
-                                      String email,
-                                      String idKey,
-                                      String phone,
-                                      String password) {
+    private String promptEmail(String fullName,
+            String email,
+            String idKey,
+            String phone,
+            String password) {
         String status = "Enter email address:";
         String candidate = email;
         while (true) {
             renderForm(status, INPUT_HINT, fullName, candidate, idKey, phone, password);
             System.out.print("> ");
+            if (!scanner.hasNextLine()) {
+                System.out.println("No input detected. Exiting registration.");
+                return null;
+            }
             candidate = scanner.nextLine().trim();
             UserList users = registration.currentUsers();
             String error = firstError(
@@ -104,18 +145,20 @@ public class RegisterCli {
         }
     }
 
-    private static String promptIdKey(Scanner scanner,
-                                      UserRegistration registration,
-                                      String fullName,
-                                      String email,
-                                      String idKey,
-                                      String phone,
-                                      String password) {
+    private String promptIdKey(String fullName,
+            String email,
+            String idKey,
+            String phone,
+            String password) {
         String status = "Create a unique ID key:";
         String candidate = idKey;
         while (true) {
             renderForm(status, INPUT_HINT, fullName, email, candidate, phone, password);
             System.out.print("> ");
+            if (!scanner.hasNextLine()) {
+                System.out.println("No input detected. Exiting registration.");
+                return null;
+            }
             candidate = scanner.nextLine().trim();
             UserList users = registration.currentUsers();
             String error = firstError(
@@ -128,17 +171,20 @@ public class RegisterCli {
         }
     }
 
-    private static String promptPhone(Scanner scanner,
-                                      String fullName,
-                                      String email,
-                                      String idKey,
-                                      String phone,
-                                      String password) {
+    private String promptPhone(String fullName,
+            String email,
+            String idKey,
+            String phone,
+            String password) {
         String status = "Enter phone number:";
         String candidate = phone;
         while (true) {
             renderForm(status, INPUT_HINT, fullName, email, idKey, candidate, password);
             System.out.print("> ");
+            if (!scanner.hasNextLine()) {
+                System.out.println("No input detected. Exiting registration.");
+                return null;
+            }
             candidate = scanner.nextLine().trim();
             String error = firstError(
                     new PhoneLengthValidator().validate(candidate),
@@ -150,22 +196,28 @@ public class RegisterCli {
         }
     }
 
-    private static String promptPassword(Scanner scanner,
-                                         Console console,
-                                         String fullName,
-                                         String email,
-                                         String idKey,
-                                         String phone,
-                                         String password) {
+    private String promptPassword(String fullName,
+            String email,
+            String idKey,
+            String phone,
+            String password) {
         String status = "Create a password (9+ chars, 1 special):";
         String candidate = password;
         while (true) {
             renderForm(status, INPUT_HINT, fullName, email, idKey, phone, candidate);
             if (console != null) {
                 char[] chars = console.readPassword("> ");
+                if (chars == null) {
+                    System.out.println("No input detected. Exiting registration.");
+                    return null;
+                }
                 candidate = new String(chars);
             } else {
                 System.out.print("> ");
+                if (!scanner.hasNextLine()) {
+                    System.out.println("No input detected. Exiting registration.");
+                    return null;
+                }
                 candidate = scanner.nextLine();
             }
             String error = firstError(
@@ -178,6 +230,15 @@ public class RegisterCli {
         }
     }
 
+    private boolean waitForLine() {
+        if (!scanner.hasNextLine()) {
+            System.out.println("No input detected. Exiting registration.");
+            return false;
+        }
+        scanner.nextLine();
+        return true;
+    }
+
     private static String firstError(String... messages) {
         for (String message : messages) {
             if (message != null && !message.isBlank()) {
@@ -188,12 +249,12 @@ public class RegisterCli {
     }
 
     private static void renderForm(String status,
-                                   String hint,
-                                   String fullName,
-                                   String email,
-                                   String idKey,
-                                   String phone,
-                                   String password) {
+            String hint,
+            String fullName,
+            String email,
+            String idKey,
+            String phone,
+            String password) {
         System.out.print(CLEAR_SCREEN);
         System.out.flush();
         printBorder('┌', '─', '┐');

@@ -12,39 +12,51 @@ public class LoginCli {
     private static final int FIELD_WIDTH = 42;
     private static final String INPUT_HINT = "Press Enter to confirm · Ctrl+C to cancel";
 
-    private final UserLogin login = new UserLogin();
+    private final UserLogin login;
+    private final Scanner scanner;
+
+    public LoginCli(Scanner scanner) {
+        this(scanner, new UserLogin(scanner));
+    }
+
+    public LoginCli() {
+        this(new Scanner(System.in));
+    }
+
+    LoginCli(Scanner scanner, UserLogin login) {
+        this.scanner = scanner;
+        this.login = login;
+    }
 
     public User run() {
         Console console = System.console();
 
-        try (Scanner scanner = new Scanner(System.in)) {
-            while (true) {
-                String idKey = promptIdKey(scanner);
-                if (idKey == null) {
-                    return null;
-                }
-
-                String password = promptPassword(scanner, console, idKey);
-                if (password == null) {
-                    return null;
-                }
-
-                UserLogin.AuthenticationResult result = login.authenticate(idKey, password);
-
-                if (!result.isSuccess()) {
-                    renderForm(result.getMessage(), "Press Enter to try again", idKey, "");
-                    waitForEnter(scanner);
-                    continue;
-                }
-
-                renderForm(result.getMessage(), "Press Enter to continue", idKey, password);
-                waitForEnter(scanner);
-                return result.getUser();
+        while (true) {
+            String idKey = promptIdKey();
+            if (idKey == null) {
+                return null;
             }
+
+            String password = promptPassword(console, idKey);
+            if (password == null) {
+                return null;
+            }
+
+            UserLogin.AuthenticationResult result = login.authenticate(idKey, password);
+
+            if (!result.isSuccess()) {
+                renderForm(result.getMessage(), "Press Enter to try again", idKey, "");
+                waitForEnter();
+                continue;
+            }
+
+            renderForm(result.getMessage(), "Press Enter to continue", idKey, password);
+            waitForEnter();
+            return result.getUser();
         }
     }
 
-    private String promptIdKey(Scanner scanner) {
+    private String promptIdKey() {
         while (true) {
             renderForm("Enter ID key:", INPUT_HINT, "", "");
             System.out.print("> ");
@@ -57,17 +69,21 @@ public class LoginCli {
                 return idKey;
             }
             renderForm("ID key cannot be empty.", "Press Enter to try again", "", "");
-            waitForEnter(scanner);
+            waitForEnter();
         }
     }
 
-    private String promptPassword(Scanner scanner, Console console, String idKey) {
+    private String promptPassword(Console console, String idKey) {
         while (true) {
             renderForm("Enter password:", INPUT_HINT, idKey, "");
             String password;
             if (console != null) {
                 char[] chars = console.readPassword("> ");
-                password = (chars == null) ? "" : new String(chars);
+                if (chars == null) {
+                    System.out.println("No input detected. Exiting login.");
+                    return null;
+                }
+                password = new String(chars);
             } else {
                 System.out.print("> ");
                 if (!scanner.hasNextLine()) {
@@ -80,11 +96,11 @@ public class LoginCli {
                 return password;
             }
             renderForm("Password cannot be empty.", "Press Enter to try again", idKey, "");
-            waitForEnter(scanner);
+            waitForEnter();
         }
     }
 
-    private void waitForEnter(Scanner scanner) {
+    private void waitForEnter() {
         System.out.print("> ");
         if (scanner.hasNextLine()) {
             scanner.nextLine();
