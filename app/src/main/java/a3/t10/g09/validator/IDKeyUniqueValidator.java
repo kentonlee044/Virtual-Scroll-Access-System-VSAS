@@ -1,11 +1,19 @@
 package a3.t10.g09.validator;
+
+import a3.t10.g09.User;
 import a3.t10.g09.UserList;
 
 public class IDKeyUniqueValidator implements Validator {
     private final UserList userList;
+    private final User currentUser;
 
     public IDKeyUniqueValidator(UserList userList) {
+        this(userList, null);
+    }
+
+    public IDKeyUniqueValidator(UserList userList, User currentUser) {
         this.userList = userList;
+        this.currentUser = currentUser;
     }
 
     @Override
@@ -13,10 +21,15 @@ public class IDKeyUniqueValidator implements Validator {
         if (input == null) {
             return "ID key cannot be null.";
         }
-        String idKey = input.toString();
-        if (userList.getUsers().stream().anyMatch(user -> user.getIdkey().equals(idKey))) {
-            return "ID key is already in use.";
+        if (userList == null || userList.getUsers() == null) {
+            return null;
         }
-        return null;
+
+        String idKey = input;
+        boolean exists = userList.getUsers().stream()
+                .filter(user -> currentUser == null || !user.getIdkey().equals(currentUser.getIdkey()))
+                .anyMatch(user -> user.getIdkey().equals(idKey));
+
+        return exists ? "ID key is already in use." : null;
     }
 }
