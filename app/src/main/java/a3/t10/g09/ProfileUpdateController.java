@@ -4,13 +4,13 @@ import java.util.Scanner;
 import a3.t10.g09.Registration.UserRegistration;
 
 public class ProfileUpdateController {
-	private final ProfileUpdateHandler handler;
 	private final Scanner scanner;
 	private UserList users;
+	private ProfileUpdateUI ui;
 
 	public ProfileUpdateController(User user, UserList users) {
 		this.users = users;
-		this.handler = new ProfileUpdateHandler(user);
+		this.ui = new ProfileUpdateUI(user, users);
 		this.scanner = new Scanner(System.in);
 	}
 
@@ -36,19 +36,19 @@ public class ProfileUpdateController {
 		}
 		switch (choice) {
 			case 1:
-				handler.updateEmail();
+				ui.updateEmail();
 				break;
 			case 2:
-				handler.updatePhoneNumber();
+				ui.updatePhoneNumber();
 				break;
 			case 3:
-				handler.updateName();
+				ui.updateName();
 				break;
 			case 4:
-				handler.updateIDKey(users);
+				ui.updateIDKey();
 				break;
 			case 5:
-				handler.updatePassword();
+				ui.updatePassword();
 				break;
 			default:
 				System.out.println("Invalid option. Please try again.");

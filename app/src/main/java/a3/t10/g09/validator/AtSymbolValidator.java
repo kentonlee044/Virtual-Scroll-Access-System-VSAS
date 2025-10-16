@@ -7,7 +7,6 @@ public class AtSymbolValidator implements Validator {
             return "Email cannot be null.";
         }
         int atIndex = email.indexOf('@');
-        System.out.println("index: " + atIndex);
         if (atIndex == 0 || atIndex == email.length() - 1) {
             return "Email must contain '@' and it cannot be at the start or end.";
         }
