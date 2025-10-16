@@ -1,5 +1,6 @@
 package a3.t10.g09;
 
+import a3.t10.g09.Registration.UserRegistration;
 import a3.t10.g09.validator.AtSymbolValidator;
 import a3.t10.g09.validator.DomainDotValidator;
 import a3.t10.g09.validator.PhoneLengthValidator;
@@ -11,136 +12,106 @@ import a3.t10.g09.validator.PasswordSpecialCharValidator;
 import a3.t10.g09.validator.PasswordUppercaseValidator;
 import a3.t10.g09.validator.IDKeyFormatValidator;
 import a3.t10.g09.validator.IDKeyUniqueValidator;
-import java.util.Scanner;
-
 import org.mindrot.jbcrypt.BCrypt;
 
 public class ProfileUpdateHandler {
-    private final Scanner scanner = new Scanner(System.in);
-    private User user;
+    private final User user;
+    private final UserList userList;
+    private final UserRegistration userRegistration;
 
-    public ProfileUpdateHandler(User user) {
+    public ProfileUpdateHandler(User user, UserList userList) {
         this.user = user;
+        this.userList = userList;
+        this.userRegistration = new UserRegistration();
     }
 
-    public void updatePhoneNumber() {
+    public String updatePhoneNumber(String newPhone) {
         PhoneLengthValidator lengthValidator = new PhoneLengthValidator();
         PhoneDigitValidator digitValidator = new PhoneDigitValidator();
 
-        System.out.print("Enter new phone number: ");
-        String newPhone = scanner.nextLine();
-
-        String result_1 = lengthValidator.validate(newPhone);
-        String result_2 = digitValidator.validate(newPhone);
-        if (result_1 != null) {
-            System.out.println(result_1);
-            return;
-        }
-        if (result_2 != null) {
-            System.out.println(result_2);
-            return;
-        }
+        String error = lengthValidator.validate(newPhone);
+        if (error != null) return error;
+        
+        error = digitValidator.validate(newPhone);
+        if (error != null) return error;
 
         user.setPhone(newPhone);
+        userRegistration.saveUsers(userList);
+        return null; // Success
     }
 
-    public void updateEmail() {
+    
+    public String updateEmail(String newEmail) {
         AtSymbolValidator atSymbolValidator = new AtSymbolValidator();
         DomainDotValidator domainDotValidator = new DomainDotValidator();
 
-        System.out.print("Enter new email: ");
-        String newEmail = scanner.nextLine();
+        String error = atSymbolValidator.validate(newEmail);
+        if (error != null) return error;
+        
+        error = domainDotValidator.validate(newEmail);
+        if (error != null) return error;
 
-        String result_1 = atSymbolValidator.validate(newEmail);
-        String result_2 = domainDotValidator.validate(newEmail);
-        if (result_1 != null) {
-            System.out.println(result_1);
-            return;
-        }
-        if (result_2 != null) {
-            System.out.println(result_2);
-            return;
-        }
-        // if all validators pass, we update the user object in UserList
         user.setEmail(newEmail);
+        userRegistration.saveUsers(userList);
+        return null; // Success
     }
 
-    public void updateName() {
+    
+    public String updateName(String newName) {
         NameValidator nameValidator = new NameValidator();
-
-        System.out.print("Enter new name: ");
-        String newName = scanner.nextLine();
-
-        String result = nameValidator.validate(newName);
-        if (result != null) {
-            System.out.println(result);
-            return;
-        }
-        // If validator passes, we update the user object in UserList
+        String error = nameValidator.validate(newName);
+        if (error != null) return error;
+        
         user.setFullname(newName);
+        userRegistration.saveUsers(userList);
+        return null; // Success
     }
 
-    public void updateIDKey(UserList userList) {
+    
+    public String updateIDKey(String newIDKey) {
         IDKeyFormatValidator formatValidator = new IDKeyFormatValidator();
-        IDKeyUniqueValidator uniqueValidator = new IDKeyUniqueValidator(userList);
+        IDKeyUniqueValidator uniqueValidator = new IDKeyUniqueValidator(this.userList);
 
-        System.out.print("Enter new ID key: ");
-        String newIDKey = scanner.nextLine();
+        String error = formatValidator.validate(newIDKey);
+        if (error != null) return error;
+        
+        error = uniqueValidator.validate(newIDKey);
+        if (error != null) return error;
 
-        String result_1 = formatValidator.validate(newIDKey);
-        String result_2 = uniqueValidator.validate(newIDKey);
-        if (result_1 != null) {
-            System.out.println(result_1);
-            return;
-        }
-        if (result_2 != null) {
-            System.out.println(result_2);
-            return;
-        }
-        // If all validators pass, we update the user object in UserList
         user.setIdkey(newIDKey);
+        userRegistration.saveUsers(userList);
+        return null; // Success
     }
 
-    public void updatePassword() {
-        System.out.print("Enter current password: ");
-        String currPass = scanner.nextLine();
-
-        // validate current password with bcrypt
-        if (!BCrypt.checkpw(currPass, user.getPassword())) {
-            System.out.println("Current password is incorrect.");
-            return;
+    
+    public String updatePassword(String currentPassword, String newPassword) {
+        // Validate current password
+        if (!BCrypt.checkpw(currentPassword, user.getPassword())) {
+            return "Current password is incorrect.";
         }
 
-        // get new password
-        System.out.print("Enter new password: ");
-        String newPass = scanner.nextLine();
-
+        // Validate new password
         PasswordDigitValidator digitValidator = new PasswordDigitValidator();
         PasswordLengthValidator lengthValidator = new PasswordLengthValidator();
         PasswordUppercaseValidator uppercaseValidator = new PasswordUppercaseValidator();
         PasswordSpecialCharValidator specialCharValidator = new PasswordSpecialCharValidator();
-        String result_1 = digitValidator.validate(newPass);
-        String result_2 = lengthValidator.validate(newPass);
-        String result_3 = uppercaseValidator.validate(newPass);
-        String result_4 = specialCharValidator.validate(newPass);
-        if (result_1 != null) {
-            System.out.println(result_1);
-            return;
-        }
-        if (result_2 != null) {
-            System.out.println(result_2);
-            return;
-        }
-        if (result_3 != null) {
-            System.out.println(result_3);
-            return;
-        }
-        if (result_4 != null) {
-            System.out.println(result_4);
-            return;
-        }
-        // If all validators pass, we update the user object in UserList
+        
+        String error = digitValidator.validate(newPassword);
+        if (error != null) return error;
+        
+        error = lengthValidator.validate(newPassword);
+        if (error != null) return error;
+        
+        error = uppercaseValidator.validate(newPassword);
+        if (error != null) return error;
+        
+        error = specialCharValidator.validate(newPassword);
+        if (error != null) return error;
 
-        user.setPassword(newPass);
+        // If all validations pass, update the password
+        String hashedPassword = BCrypt.hashpw(newPassword, BCrypt.gensalt(12));
+        user.setPassword(hashedPassword);
+        userRegistration.saveUsers(userList);
+        return null; // Success
     }
 }

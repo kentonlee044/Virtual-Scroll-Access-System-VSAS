@@ -1,26 +1,35 @@
 package a3.t10.g09;
 
 import java.util.Scanner;
+import a3.t10.g09.Registration.UserRegistration;
 
 public class ProfileUpdateController {
-	private final ProfileUpdateHandler handler;
 	private final Scanner scanner;
 	private UserList users;
+	private ProfileUpdateUI ui;
 
 	public ProfileUpdateController(User user, UserList users) {
 		this.users = users;
-		this.handler = new ProfileUpdateHandler(user);
+		this.ui = new ProfileUpdateUI(user, users);
 		this.scanner = new Scanner(System.in);
 	}
 
+	public void printMenu(){
+		System.out.println("┌────────────────────────────────────────────────────────┐");
+		System.out.println("│   User Profile Update Menu                             │");
+		System.out.println("├────────────────────────────────────────────────────────┤");
+		System.out.println("│  1) Update Email                                       │");
+		System.out.println("│  2) Update Phone Number                                │");
+		System.out.println("│  3) Update Name                                        │");
+		System.out.println("│  4) Update ID Key                                      │");
+		System.out.println("│  5) Update Password                                    │");
+		System.out.println("│  0) Exit                                               │");
+		System.out.println("└────────────────────────────────────────────────────────┘");
+		System.out.print("Select an option (0-5): ");
+	}
+
 	public void displayMenu() {
-		System.out.println("Profile Update Menu:");
-		System.out.println("1. Update Email");
-		System.out.println("2. Update Phone Number");
-		System.out.println("3. Update Name");
-		System.out.println("4. Update ID Key");
-		System.out.println("5. Update Password");
-		System.out.print("Enter the number of the option you want to update: ");
+		printMenu();
 		if (!scanner.hasNextLine()) {
 			System.out.println("No input detected. Exiting profile update menu.");
 			return;
@@ -35,22 +44,27 @@ public class ProfileUpdateController {
 		}
 		switch (choice) {
 			case 1:
-				handler.updateEmail();
+				ui.updateEmail();
 				break;
 			case 2:
-				handler.updatePhoneNumber();
+				ui.updatePhoneNumber();
 				break;
 			case 3:
-				handler.updateName();
+				ui.updateName();
 				break;
 			case 4:
-				handler.updateIDKey(users);
+				ui.updateIDKey();
 				break;
 			case 5:
-				handler.updatePassword();
+				ui.updatePassword();
 				break;
+			case 0:
+				return;
 			default:
 				System.out.println("Invalid option. Please try again.");
 		}
+		//finally, save the updated user list to the JSON file
+		UserRegistration registration = new UserRegistration();
+		registration.saveUsers(users);
 	}
 }

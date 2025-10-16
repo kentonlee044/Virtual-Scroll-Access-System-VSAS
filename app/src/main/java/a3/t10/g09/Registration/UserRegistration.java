@@ -73,12 +73,12 @@ public class UserRegistration {
         String hashed = hashPassword(password);
 
         User newUser = new User(
-                normIdKey, // id key (unique)
-                name, // full name
-                normPhone, // phone
-                normEmail, // email (unique, stored lower-case)
-                hashed // hashed password
-        );
+                normIdKey,
+                name,
+                normPhone,
+                normEmail,
+                "user",
+                hashed);
 
         users.addUser(newUser);
         saveUsers(users);
@@ -114,7 +114,7 @@ public class UserRegistration {
         }
     }
 
-    private void saveUsers(UserList users) {
+    public void saveUsers(UserList users) {
         try {
             ensureFile();
             Path target = Path.of(USER_DATA);
