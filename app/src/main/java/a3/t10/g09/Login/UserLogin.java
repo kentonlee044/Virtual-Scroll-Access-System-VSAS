@@ -11,7 +11,7 @@ import java.util.Scanner;
 
 public class UserLogin {
 
-    private static final String DEFAULT_USER_DATA = "app/src/main/java/a3/t10/g09/data/users.json";
+    private static final String DEFAULT_USER_DATA = "src/main/java/a3/t10/g09/data/users.json";
 
     private final String userDataPath;
     private final Gson gson = new Gson();
