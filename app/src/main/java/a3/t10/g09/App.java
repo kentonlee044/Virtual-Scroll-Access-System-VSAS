@@ -69,28 +69,5 @@ public class App {
         try (Scanner scanner = new Scanner(System.in)) {
             new MainMenu(scanner).run();
         }
-        // boolean isRunning = true;
-        // Scanner sc = new Scanner(System.in);
-        // while (isRunning) {
-        // // outer loop displaying username, user type and available commands
-        // try {
-        // // TODO: anyone can change this to whatever UI looks nicer
-        // System.out.println("================");
-        // System.out.println("Username: " + client.getUsername() + "| Type: " +
-        // client.getUserType());
-        // Command[] availableCommands = client.getAvailableCommands();
-        // System.out.println("Available commands:");
-        // for (int i = 0; i < availableCommands.length; i++) {
-        // System.out.println((i + 1) + ": " + availableCommands[i].getDescription());
-        // }
-        // System.out.println("Enter a command selection (1 - " +
-        // (availableCommands.length + 1) + ")");
-        // String input = sc.nextLine();
-        // } catch (NoSuchElementException e) {
-        // isRunning = false;
-        // break;
-        // }
-        // }
-
     }
 }
