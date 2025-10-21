@@ -33,7 +33,7 @@ public class Client {
         ArrayList<Command> available = new ArrayList<>();
         for (Command cmd : Command.values()) {
             if (cmd.isAllowed(this.clientStatus)) {
-                available.add(cmd);                break;
+                available.add(cmd);
             }
         }
         Command[] returnArray = available.toArray(new Command[0]);

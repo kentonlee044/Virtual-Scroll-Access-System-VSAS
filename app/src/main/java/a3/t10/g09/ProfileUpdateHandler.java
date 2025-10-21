@@ -1,17 +1,17 @@
 package a3.t10.g09;
 
 import a3.t10.g09.Registration.UserRegistration;
-import a3.t10.g09.validator.AtSymbolValidator;
-import a3.t10.g09.validator.DomainDotValidator;
-import a3.t10.g09.validator.PhoneLengthValidator;
-import a3.t10.g09.validator.PhoneDigitValidator;
-import a3.t10.g09.validator.NameValidator;
-import a3.t10.g09.validator.PasswordDigitValidator;
-import a3.t10.g09.validator.PasswordLengthValidator;
-import a3.t10.g09.validator.PasswordSpecialCharValidator;
-import a3.t10.g09.validator.PasswordUppercaseValidator;
-import a3.t10.g09.validator.IDKeyFormatValidator;
-import a3.t10.g09.validator.IDKeyUniqueValidator;
+import a3.t10.g09.Validator.AtSymbolValidator;
+import a3.t10.g09.Validator.DomainDotValidator;
+import a3.t10.g09.Validator.PhoneLengthValidator;
+import a3.t10.g09.Validator.PhoneDigitValidator;
+import a3.t10.g09.Validator.NameValidator;
+import a3.t10.g09.Validator.PasswordDigitValidator;
+import a3.t10.g09.Validator.PasswordLengthValidator;
+import a3.t10.g09.Validator.PasswordSpecialCharValidator;
+import a3.t10.g09.Validator.PasswordUppercaseValidator;
+import a3.t10.g09.Validator.IDKeyFormatValidator;
+import a3.t10.g09.Validator.IDKeyUniqueValidator;
 import org.mindrot.jbcrypt.BCrypt;
 
 public class ProfileUpdateHandler {

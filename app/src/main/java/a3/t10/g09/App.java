@@ -14,10 +14,10 @@ import a3.t10.g09.Login.LoginCli;
 import a3.t10.g09.Login.UserLogin;
 
 public class App {
-    static Client client;
+    private Client client;
     UserList userList;
 
-    App() {
+    public App() {
         client = new Client();
     }
 
@@ -65,9 +65,33 @@ public class App {
     }
 
     public static void main(String[] args) {
-        // testProfileUpdateUI();
-        try (Scanner scanner = new Scanner(System.in)) {
-            new MainMenu(scanner).run();
+        App app = new App();
+        Scanner scanner = new Scanner(System.in);
+        while (true) {
+            Command[] commands = app.client.getAvailableCommands();
+            DisplayUITable.printMenu(commands, MenuTitle.MAIN);
+            if (!scanner.hasNextLine()) {
+                System.out.println("No input detected. Exiting.");
+                return;
+            }
+            String line = scanner.nextLine().trim();
+            int choice;
+            try {
+                choice = Integer.parseInt(line);
+            } catch (NumberFormatException e) {
+                System.out.println("Please enter a number between 1 and " + commands.length + ".\n");
+                continue;
+            }
+            if (choice > commands.length || choice < 1) {
+                System.out.println("Invalid input. Please choose a number between 1 and " + commands.length + ".\n");
+            }
+            commands[(choice - 1)].execute(scanner);
         }
+
+    }
+        public void run() {
+            while (true) {
+
+            }
     }
 }

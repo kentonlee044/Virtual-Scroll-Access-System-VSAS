@@ -1,4 +1,4 @@
-package a3.t10.g09.validator;
+package a3.t10.g09.Validator;
 
 import a3.t10.g09.User;
 import a3.t10.g09.UserList;
