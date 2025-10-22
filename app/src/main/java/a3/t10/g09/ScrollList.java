@@ -29,6 +29,17 @@ public class ScrollList {
     public List<Scroll> getAllScrolls() {
         return new ArrayList<>(scrolls); // Return a copy to preserve encapsulation
     }
+    
+    // Get scrolls owned by a specific user
+    public List<Scroll> getScrollsByOwner(String ownerId) {
+        List<Scroll> ownedScrolls = new ArrayList<>();
+        for (Scroll scroll : scrolls) {
+            if (scroll.isOwnedBy(ownerId)) {
+                ownedScrolls.add(scroll);
+            }
+        }
+        return ownedScrolls;
+    }
 
     // Remove a scroll by filename
     public boolean removeScroll(String filename) {
