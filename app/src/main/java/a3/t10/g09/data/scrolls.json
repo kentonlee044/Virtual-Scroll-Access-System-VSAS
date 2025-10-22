@@ -1,32 +1,9 @@
 [
-    {
-      "filename": "ancient_scroll_1.txt",
-      "numberOfUploads": 3,
-      "numberOfDownloads": 15,
-      "categorizationId": "ARC-001"
-    },
-    {
-      "filename": "forbidden_techniques.pdf",
-      "numberOfUploads": 1,
-      "numberOfDownloads": 42,
-      "categorizationId": "FORB-007"
-    },
-    {
-      "filename": "healing_spells.docx",
-      "numberOfUploads": 5,
-      "numberOfDownloads": 28,
-      "categorizationId": "HEAL-003"
-    },
-    {
-      "filename": "summoning_rituals.json",
-      "numberOfUploads": 2,
-      "numberOfDownloads": 63,
-      "categorizationId": "SUMM-012"
-    },
-    {
-      "filename": "herbology_guide.pdf",
-      "numberOfUploads": 4,
-      "numberOfDownloads": 37,
-      "categorizationId": "HERB-008"
-    }
-  ]
+  {
+    "filename": "hello.txt",
+    "numberOfUploads": 0,
+    "numberOfDownloads": 0,
+    "categorizationId": "fantastic",
+    "ownerId": "jloparc"
+  }
+]
