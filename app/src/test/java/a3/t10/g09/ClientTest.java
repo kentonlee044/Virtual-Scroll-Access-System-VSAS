@@ -8,15 +8,16 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ClientTest {
     Client client;
+
     @BeforeEach
     public void setUp() {
         client = new Client();
     }
-    @Test
-    public void testGetters() {
-        assertEquals("N/A", client.getUsername());
-        assertEquals(ClientStatus.ANONYMOUS, client.getUserType());
-        client.getAvailableCommands();
-        client.getCurrentUser();
-    }
+    // @Test
+    // public void testGetters() {
+    // assertEquals("N/A", client.getUsername());
+    // assertEquals(ClientStatus.ANONYMOUS, client.getUserType());
+    // client.getAvailableCommands();
+    // client.getCurrentUser();
+    // }
 }

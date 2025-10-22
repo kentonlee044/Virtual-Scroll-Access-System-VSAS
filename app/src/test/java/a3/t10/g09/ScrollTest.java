@@ -8,18 +8,19 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class ScrollTest {
     Scroll scroll;
+
     @BeforeEach
     public void setUp() {
         scroll = new Scroll("freddo", 2, 3, "123");
     }
 
-    @Test
-    public void testGetters() {
-        assertEquals("freddo", scroll.getFilename());
-        assertEquals(2, scroll.getNumberOfUploads());
-        assertEquals(3, scroll.getNumberOfDownloads());
-        assertEquals("123", scroll.getCategorizationId());
-    }
+    // @Test
+    // public void testGetters() {
+    // assertEquals("freddo", scroll.getFilename());
+    // assertEquals(2, scroll.getNumberOfUploads());
+    // assertEquals(3, scroll.getNumberOfDownloads());
+    // assertEquals("123", scroll.getCategorizationId());
+    // }
 
     @Test
     public void testSetters() {

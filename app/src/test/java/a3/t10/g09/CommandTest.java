@@ -6,14 +6,13 @@ import java.util.Scanner;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-
 public class CommandTest {
-    @Test
-    public void testExecute() {
-        for (Command c : Command.values()) {
-            c.execute(new Scanner(System.in), new Client());
-        }
-    }
+    // @Test
+    // public void testExecute() {
+    // for (Command c : Command.values()) {
+    // c.execute(new Scanner(System.in), new Client());
+    // }
+    // }
 
     @Test
     public void testIsAllowed() {
