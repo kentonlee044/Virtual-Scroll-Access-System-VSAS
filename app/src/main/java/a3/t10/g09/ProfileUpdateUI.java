@@ -14,188 +14,239 @@ public class ProfileUpdateUI {
         this.updateHandler = new ProfileUpdateHandler(user, userList);
     }
 
-    
-    private String displayBox(String title, String prompt, String currentValue, boolean showError) {
-        // Create the box borders (58 characters wide to account for borders and padding)
-        String topBorder = "┌" + "─".repeat(56) + "┐";
-        String middleBorder = "├" + "─".repeat(56) + "┤";
-        String bottomBorder = "└" + "─".repeat(56) + "┘";
-        
-        System.out.println("\n" + topBorder);
-        
-        // Center the title
-        int padding = (56 - title.length()) / 2;
-        String centeredTitle = " ".repeat(padding) + title + " ".repeat(56 - title.length() - padding);
-        System.out.println("│" + centeredTitle + "│");
-        
-        // Add middle border after title
-        System.out.println(middleBorder);
-        
-        // Display current value if provided
-        if (currentValue != null && !currentValue.isEmpty()) {
-            String currentLine = "│ Current: " + currentValue;
-            currentLine += " ".repeat(55 - currentLine.length()) + "│";
-            System.out.println(currentLine);
-            System.out.println(middleBorder);
+    // UI helpers adapted from RegisterCli/ScrollUpload for consistent look
+    private static final String CLEAR_SCREEN = "\033[H\033[2J";
+    private static final int BOX_WIDTH = 70;
+    private static final int LABEL_WIDTH = 16;
+    private static final int FIELD_WIDTH = 42;
+    private static final String INPUT_HINT = "Press Enter to confirm · Ctrl+C to cancel";
+
+    private static void printBorder(char left, char fill, char right) {
+        System.out.println(left + String.valueOf(fill).repeat(BOX_WIDTH) + right);
+    }
+
+    private static String centerRow(String text) {
+        String content = text == null ? "" : text;
+        if (content.length() > BOX_WIDTH) {
+            content = content.substring(0, BOX_WIDTH - 1) + "…";
         }
-        
-        // Show prompt and get input
-        String promptLine = "│ " + prompt;
-        System.out.print(promptLine + " ".repeat(56 - promptLine.length() - 1) + "│\n│ ");
-        String input = scanner.nextLine().trim();
-        
-        // Close the box
-        System.out.println(bottomBorder);
-        System.out.println();
-        
-        return input;
+        int padding = Math.max(0, BOX_WIDTH - content.length());
+        int leftPad = padding / 2;
+        int rightPad = padding - leftPad;
+        return "│" + " ".repeat(leftPad) + content + " ".repeat(rightPad) + "│";
+    }
+
+    private static String row(String text) {
+        String content = text == null ? "" : text;
+        if (content.length() > BOX_WIDTH) {
+            content = content.substring(0, BOX_WIDTH - 1) + "…";
+        }
+        return "│" + String.format("%-" + BOX_WIDTH + "s", content) + "│";
+    }
+
+    private static String padValue(String value, boolean mask) {
+        String content = value == null ? "" : value;
+        if (mask) {
+            content = "*".repeat(Math.min(content.length(), FIELD_WIDTH));
+        }
+        if (content.length() > FIELD_WIDTH) {
+            content = content.substring(0, FIELD_WIDTH - 1) + "…";
+        }
+        return String.format("%-" + FIELD_WIDTH + "s", content);
+    }
+
+    private static String fieldLine(String label, String value, boolean mask) {
+        String paddedValue = padValue(value, mask);
+        String content = String.format("%-" + LABEL_WIDTH + "s [%s]", label, paddedValue);
+        return row(content);
+    }
+
+    private static void renderProfileForm(String title,
+                                          String status,
+                                          String hint,
+                                          String fullName,
+                                          String email,
+                                          String idKey,
+                                          String phone) {
+        System.out.print(CLEAR_SCREEN);
+        System.out.flush();
+        printBorder('┌', '─', '┐');
+        System.out.println(centerRow(title));
+        printBorder('├', '─', '┤');
+        System.out.println(fieldLine("Full name", fullName, false));
+        System.out.println(fieldLine("Email", email, false));
+        System.out.println(fieldLine("ID key", idKey, false));
+        System.out.println(fieldLine("Phone", phone, false));
+        printBorder('├', '─', '┤');
+        System.out.println(row(status));
+        System.out.println(row(hint));
+        printBorder('└', '─', '┘');
+    }
+
+    private static void renderPasswordForm(String title,
+                                           String status,
+                                           String hint,
+                                           String currentPassword,
+                                           String newPassword,
+                                           String confirmPassword) {
+        System.out.print(CLEAR_SCREEN);
+        System.out.flush();
+        printBorder('┌', '─', '┐');
+        System.out.println(centerRow(title));
+        printBorder('├', '─', '┤');
+        System.out.println(fieldLine("Current password", currentPassword, true));
+        System.out.println(fieldLine("New password", newPassword, true));
+        System.out.println(fieldLine("Confirm password", confirmPassword, true));
+        printBorder('├', '─', '┤');
+        System.out.println(row(status));
+        System.out.println(row(hint));
+        printBorder('└', '─', '┘');
     }
 
     public void updatePhoneNumber() {
-        String errorMessage = null;
-        String currentPhone = user.getPhone();
-        
-        do {
-            if (errorMessage != null) {
-                System.out.println("\u001B[31m" + errorMessage + "\u001B[0m");
-            }
-            
-            String newPhone = displayBox("UPDATE PHONE NUMBER", "Enter new phone number:", currentPhone, errorMessage != null);
-            
-            // Call the handler and get the result
-            errorMessage = updateHandler.updatePhoneNumber(newPhone);
-            
-            if (errorMessage == null) {
-                System.out.println("\nPhone number updated successfully.");
+        String status = "Enter new phone number:";
+        String candidate = user.getPhone();
+        while (true) {
+            renderProfileForm("Update Phone Number", status, INPUT_HINT, user.getFullname(), user.getEmail(), user.getIdkey(), candidate);
+            System.out.print("> ");
+            if (!scanner.hasNextLine()) {
+                System.out.println("No input detected. Exiting.");
                 return;
             }
-        } while (true);
+            candidate = scanner.nextLine().trim();
+            String error = updateHandler.updatePhoneNumber(candidate);
+            if (error == null) {
+                renderProfileForm("Update Phone Number", "✓ Phone number updated successfully.", "Press Enter to continue", user.getFullname(), user.getEmail(), user.getIdkey(), candidate);
+                if (scanner.hasNextLine()) scanner.nextLine();
+                return;
+            }
+            status = error;
+        }
     }
 
     public void updateEmail() {
-        String errorMessage = null;
-        String currentEmail = user.getEmail();
-        
-        do {
-            if (errorMessage != null) {
-                System.out.println("\u001B[31m" + errorMessage + "\u001B[0m");
-            }
-            
-            String newEmail = displayBox("UPDATE EMAIL", "Enter new email:", currentEmail, errorMessage != null);
-            
-            // Call the handler and get the result
-            errorMessage = updateHandler.updateEmail(newEmail);
-            
-            if (errorMessage == null) {
-                System.out.println("\nEmail updated successfully.");
+        String status = "Enter new email:";
+        String candidate = user.getEmail();
+        while (true) {
+            renderProfileForm("Update Email", status, INPUT_HINT, user.getFullname(), candidate, user.getIdkey(), user.getPhone());
+            System.out.print("> ");
+            if (!scanner.hasNextLine()) {
+                System.out.println("No input detected. Exiting.");
                 return;
             }
-        } while (true);
+            candidate = scanner.nextLine().trim();
+            String error = updateHandler.updateEmail(candidate);
+            if (error == null) {
+                renderProfileForm("Update Email", "✓ Email updated successfully.", "Press Enter to continue", user.getFullname(), candidate, user.getIdkey(), user.getPhone());
+                if (scanner.hasNextLine()) scanner.nextLine();
+                return;
+            }
+            status = error;
+        }
     }
 
     public void updateName() {
-        String errorMessage = null;
-        String currentName = user.getFullname();
-        
-        do {
-            if (errorMessage != null) {
-                System.out.println("\u001B[31m" + errorMessage + "\u001B[0m");
-            }
-            
-            String newName = displayBox("UPDATE NAME", "Enter new name:", currentName, errorMessage != null);
-            
-            // Call the handler and get the result
-            errorMessage = updateHandler.updateName(newName);
-            
-            if (errorMessage == null) {
-                System.out.println("\nName updated successfully.");
+        String status = "Enter new name:";
+        String candidate = user.getFullname();
+        while (true) {
+            renderProfileForm("Update Name", status, INPUT_HINT, candidate, user.getEmail(), user.getIdkey(), user.getPhone());
+            System.out.print("> ");
+            if (!scanner.hasNextLine()) {
+                System.out.println("No input detected. Exiting.");
                 return;
             }
-        } while (true);
+            candidate = scanner.nextLine().trim();
+            String error = updateHandler.updateName(candidate);
+            if (error == null) {
+                renderProfileForm("Update Name", "✓ Name updated successfully.", "Press Enter to continue", candidate, user.getEmail(), user.getIdkey(), user.getPhone());
+                if (scanner.hasNextLine()) scanner.nextLine();
+                return;
+            }
+            status = error;
+        }
     }
 
     public void updateIDKey() {
-        String errorMessage = null;
-        String currentIDKey = user.getIdkey();
-        
-        do {
-            if (errorMessage != null) {
-                System.out.println("\u001B[31m" + errorMessage + "\u001B[0m");
-            }
-            
-            String newIDKey = displayBox("UPDATE ID KEY", "Enter new ID key:", currentIDKey, errorMessage != null);
-            
-            // Call the handler and get the result
-            String result = updateHandler.updateIDKey(newIDKey);
-            
-            if (result == null) {
-                System.out.println("\nID key updated successfully.");
+        String status = "Enter new ID key:";
+        String candidate = user.getIdkey();
+        while (true) {
+            renderProfileForm("Update ID Key", status, INPUT_HINT, user.getFullname(), user.getEmail(), candidate, user.getPhone());
+            System.out.print("> ");
+            if (!scanner.hasNextLine()) {
+                System.out.println("No input detected. Exiting.");
                 return;
             }
-
-            errorMessage = result;
-        } while (true);
+            candidate = scanner.nextLine().trim();
+            String error = updateHandler.updateIDKey(candidate);
+            if (error == null) {
+                renderProfileForm("Update ID Key", "✓ ID key updated successfully.", "Press Enter to continue", user.getFullname(), user.getEmail(), candidate, user.getPhone());
+                if (scanner.hasNextLine()) scanner.nextLine();
+                return;
+            }
+            status = error;
+        }
     }
 
     public void updatePassword() {
-        String errorMessage = null;
-        
-        do {
-            if (errorMessage != null) {
-                System.out.println("\u001B[31m" + errorMessage + "\u001B[0m");
-            }
-            
-            // First, get current password
-            String currentPassword = displayBox("UPDATE PASSWORD", "Enter current password:", "", errorMessage != null && errorMessage.startsWith("Current password"));
-            
-            // If we have an error and it's not about the current password, continue to new password input
-            if (errorMessage != null && !errorMessage.startsWith("Current password")) {
-                // Get the new password (only once)
-                String newPassword = displayBox("UPDATE PASSWORD", "Enter new password:", "", true);
-                
-                // Call the handler with current and new password (no confirm password)
-                errorMessage = updateHandler.updatePassword(currentPassword, newPassword);
-                
-                if (errorMessage == null) {
-                    System.out.println("\nPassword updated successfully.");
-                    return;
-                }
-                continue;
-            }
-            
-            // Get new password
-            String newPassword = displayBox("UPDATE PASSWORD", "Enter new password:", "", errorMessage != null && !errorMessage.startsWith("Current password"));
-            
-            // Show error message if any (for new password validation)
-            if (errorMessage != null && !errorMessage.startsWith("Current password")) {
-                System.out.println("\u001B[31m" + errorMessage + "\u001B[0m");
-                
-                // Get confirmation again
-                String confirmPassword = displayBox("UPDATE PASSWORD", "Confirm new password:", "", false);
-                
-                // Check if passwords match
-                if (!newPassword.equals(confirmPassword)) {
-                    errorMessage = "Error: Passwords do not match";
-                    continue;
-                }
-            } else {
-                // Get confirmation if no error yet
-                String confirmPassword = displayBox("UPDATE PASSWORD", "Confirm new password:", "", false);
-                
-                // Check if passwords match
-                if (!newPassword.equals(confirmPassword)) {
-                    errorMessage = "Error: Passwords do not match";
-                    continue;
-                }
-            }
-            
-            // Call the handler and get the result
-            errorMessage = updateHandler.updatePassword(currentPassword, newPassword);
-            
-            if (errorMessage == null) {
-                System.out.println("\nPassword updated successfully.");
+        String status = "Enter current password:";
+        String current = "";
+        String next = "";
+        String confirm = "";
+
+        // Current password
+        while (true) {
+            renderPasswordForm("Update Password", status, INPUT_HINT, current, "", "");
+            System.out.print("> ");
+            if (!scanner.hasNextLine()) {
+                System.out.println("No input detected. Exiting.");
                 return;
             }
-        } while (true);
+            current = scanner.nextLine();
+            // proceed to next step regardless; handler will validate in final step
+            break;
+        }
+
+        // New password
+        status = "Enter new password:";
+        while (true) {
+            renderPasswordForm("Update Password", status, INPUT_HINT, current, next, "");
+            System.out.print("> ");
+            if (!scanner.hasNextLine()) {
+                System.out.println("No input detected. Exiting.");
+                return;
+            }
+            next = scanner.nextLine();
+            if (next.isEmpty()) {
+                status = "Error: New password cannot be empty";
+                continue;
+            }
+            break;
+        }
+
+        // Confirm password
+        status = "Confirm new password:";
+        while (true) {
+            renderPasswordForm("Update Password", status, INPUT_HINT, current, next, confirm);
+            System.out.print("> ");
+            if (!scanner.hasNextLine()) {
+                System.out.println("No input detected. Exiting.");
+                return;
+            }
+            confirm = scanner.nextLine();
+            if (!next.equals(confirm)) {
+                status = "Error: Passwords do not match";
+                continue;
+            }
+            break;
+        }
+
+        String error = updateHandler.updatePassword(current, next);
+        if (error == null) {
+            renderPasswordForm("Update Password", "✓ Password updated successfully.", "Press Enter to continue", current, next, confirm);
+            if (scanner.hasNextLine()) scanner.nextLine();
+        } else {
+            renderPasswordForm("Update Password", error, "Press Enter to retry", current, next, confirm);
+            if (scanner.hasNextLine()) scanner.nextLine();
+        }
     }
 }
