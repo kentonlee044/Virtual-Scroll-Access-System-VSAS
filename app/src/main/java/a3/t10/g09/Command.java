@@ -1,11 +1,11 @@
 package a3.t10.g09;
 
+import java.util.EnumSet;
+import java.util.Scanner;
+import java.util.Set;
+
 import a3.t10.g09.Login.LoginCli;
 import a3.t10.g09.Registration.RegisterCli;
-
-import java.util.EnumSet;
-import java.util.Set;
-import java.util.Scanner;
 
 public enum Command {
 
@@ -71,7 +71,14 @@ public enum Command {
 //
 //        }
 //    },
-    UPLOAD_SCROLL(EnumSet.of(ClientStatus.GENERIC_USER, ClientStatus.ADMIN), "Upload a new scroll") {
+    NEW_SCROLL(EnumSet.of(ClientStatus.GENERIC_USER, ClientStatus.ADMIN), "Upload a new scroll") {
+        @Override
+        public void execute(Scanner scanner, Client client) {
+            new ScrollUpload(scanner, client.getCurrentUser().getIdkey()).run();
+        }
+    },
+    
+    UPLOAD_REPLACEMENT_SCROLL(EnumSet.of(ClientStatus.GENERIC_USER, ClientStatus.ADMIN), "Replace existing scroll with a new upload") {
         @Override
         public void execute(Scanner scanner, Client client) {
             new ScrollUpload(scanner, client.getCurrentUser().getIdkey()).run();
