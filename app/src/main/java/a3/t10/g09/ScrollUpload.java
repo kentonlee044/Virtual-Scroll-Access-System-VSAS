@@ -1,11 +1,12 @@
 package a3.t10.g09;
 
-import a3.t10.g09.Validator.ScrollCategorizationIdValidator;
+import java.util.List;
+import java.util.Scanner;
+
 import a3.t10.g09.Validator.ScrollCategorizationIdUniqueValidator;
+import a3.t10.g09.Validator.ScrollCategorizationIdValidator;
 import a3.t10.g09.Validator.ScrollFilenameValidator;
 import a3.t10.g09.Validator.Validator;
-
-import java.util.Scanner;
 
 public class ScrollUpload {
     private final Scanner scanner;
@@ -76,6 +77,25 @@ public class ScrollUpload {
         printBorder('├', '─', '┤');
         System.out.println(fieldLine("Filename", filename));
         System.out.println(fieldLine("Categorization ID", categorizationId));
+        printBorder('├', '─', '┤');
+        System.out.println(row(status));
+        System.out.println(row(hint));
+        printBorder('└', '─', '┘');
+    }
+
+    private static void renderFormReplace(String status,
+                                          String hint,
+                                          String ownerID,
+                                          String oldFilename,
+                                          String newFilename) {
+        System.out.print(CLEAR_SCREEN);
+        System.out.flush();
+        printBorder('┌', '─', '┐');
+        System.out.println(centerRow("Replace Existing Scroll"));
+        printBorder('├', '─', '┤');
+        System.out.println(fieldLine("ID", ownerID));
+        System.out.println(fieldLine("Old Filename", oldFilename));
+        System.out.println(fieldLine("New Filename", newFilename));
         printBorder('├', '─', '┤');
         System.out.println(row(status));
         System.out.println(row(hint));
@@ -167,6 +187,111 @@ public class ScrollUpload {
             waitForLine();
         } else {
             renderFormUpload("✗ Error: Failed to save scroll.", "Press Enter to return", filename, categorizationId);
+            waitForLine();
+        }
+    }
+
+    public void replaceExisting() {
+        // Similar to run(), but replaces an existing scroll
+        // Implementation would be similar to run(), with adjustments for replacement logic
+        String oldFileName = "";
+        String newFileName = "";
+        String ownerID = "";
+        List<Scroll> ownedScrolls;
+
+        // Prompt filename (required)
+        String status = "Enter ID key:";
+        String candidate = ownerID;
+        while(true){
+            renderFormReplace(status, 
+                              INPUT_HINT,
+                              candidate,
+                              oldFileName,
+                              newFileName);
+            System.out.print("> ");
+            if (!scanner.hasNextLine()) {
+                System.out.println("No input detected. Exiting.");
+                return;
+            }
+            candidate = scanner.nextLine().trim();
+            ownedScrolls = ScrollJSONHandler.loadFromJson().getScrollsByOwner(candidate);
+
+            if (!ownedScrolls.isEmpty()) {
+                ownerID = candidate;
+                break;
+            }
+            status = "No scrolls found for the given owner ID. Please try again.";
+        }
+
+        status = "Enter old filename:";
+        candidate = oldFileName;
+        while (true) {
+            renderFormReplace(status, 
+                              INPUT_HINT,
+                              ownerID,
+                              candidate,
+                              newFileName);
+            System.out.print("> ");
+            if (!scanner.hasNextLine()) {
+                System.out.println("No input detected. Exiting.");
+                return;
+            }
+            candidate = scanner.nextLine().trim();
+            boolean found = false;
+            for (Scroll scroll : ownedScrolls) {
+                if (scroll.getFilename().equals(candidate) && scroll.isOwnedBy(ownerID)) {
+                    found = true;
+                    break;
+                }
+            }
+            if (found) {
+                oldFileName = candidate;
+                break;
+            }
+            status = "Filename not found among owner's scrolls. Please try again.";
+        }
+        // Prompt new filename (required)
+        status = "Enter new filename:";
+        candidate = newFileName;
+        while (true) {
+            renderFormReplace(status, 
+                              INPUT_HINT,
+                              ownerID,
+                              oldFileName,
+                              candidate);
+            System.out.print("> ");
+            if (!scanner.hasNextLine()) {
+                System.out.println("No input detected. Exiting.");
+                return;
+            }
+            candidate = scanner.nextLine().trim();
+            if(candidate.isEmpty()){
+                status = "Filename cannot be empty.";
+                break;
+            }
+            String error = firstError(filenameValidator.validate(candidate));
+            if (error == null) {
+                newFileName = candidate;
+                break;
+            }
+            status = error;
+        }
+
+        // Review
+        renderFormReplace("Review replacement", SUBMIT_HINT, ownerID, oldFileName, newFileName);
+        if (!waitForLine()) {
+            return;
+        }
+
+        // Replace and save the scroll
+        ScrollList scrolls = ScrollJSONHandler.loadFromJson();
+        boolean replaced = scrolls.replaceExistingScroll(oldFileName, newFileName, ownerID);
+        
+        if (replaced && ScrollJSONHandler.saveToJson(scrolls)) {
+            renderFormReplace("✓ Scroll replaced successfully!", "Press Enter to continue", ownerID, oldFileName, newFileName);
+            waitForLine();
+        } else {
+            renderFormReplace("✗ Error: Failed to replace scroll.", "Press Enter to return", ownerID, oldFileName, newFileName);
             waitForLine();
         }
     }
