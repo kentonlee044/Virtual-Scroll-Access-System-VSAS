@@ -25,6 +25,18 @@ public class ScrollList {
         return null;
     }
 
+    // Upload a new binary file to replace a scroll
+    public boolean replaceExistingScroll(String oldFileName,String newFileName, String ownerID) {
+        List<Scroll> ownedScrolls = this.getScrollsByOwner(ownerID);
+        for (Scroll scroll : ownedScrolls) {
+            if (scroll.getFilename().equals(oldFileName)) {
+                scroll.setFilename(newFileName);
+                return true;
+            }
+        }
+        return false;
+    }
+
     // Get all scrolls
     public List<Scroll> getAllScrolls() {
         return new ArrayList<>(scrolls); // Return a copy to preserve encapsulation
