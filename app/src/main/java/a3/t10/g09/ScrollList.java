@@ -31,6 +31,8 @@ public class ScrollList {
         for (Scroll scroll : ownedScrolls) {
             if (scroll.getFilename().equals(oldFileName)) {
                 scroll.setFilename(newFileName);
+                scroll.resetDownloads();
+                scroll.resetUploads();
                 return true;
             }
         }
