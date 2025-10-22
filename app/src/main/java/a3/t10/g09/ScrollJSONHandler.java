@@ -22,6 +22,10 @@ public class ScrollJSONHandler {
             ScrollList scrollList = new ScrollList();
             if (scrolls != null) {
                 for (Scroll scroll : scrolls) {
+                    // Set default owner to 'system' for existing scrolls without an owner
+                    if (scroll.getOwnerId() == null) {
+                        scroll.setOwnerId("system");
+                    }
                     scrollList.addScroll(scroll);
                 }
             }

@@ -5,24 +5,26 @@ public class Scroll {
     private int numberOfUploads;
     private int numberOfDownloads;
     private String categorizationId;
+    private String ownerId;  // ID of the user who owns this scroll
 
-    public Scroll(String filename) {
-        this(filename, 0, 0, "");
+    public Scroll(String filename, String ownerId) {
+        this(filename, 0, 0, "", ownerId);
     }
 
-    public Scroll(String filename, int numberOfUploads, int numberOfDownloads) {
-        this(filename, numberOfUploads, numberOfDownloads, "");
+    public Scroll(String filename, int numberOfUploads, int numberOfDownloads, String ownerId) {
+        this(filename, numberOfUploads, numberOfDownloads, "", ownerId);
     }
     
-    public Scroll(String filename, String categorizationId) {
-        this(filename, 0, 0, categorizationId);
+    public Scroll(String filename, String categorizationId, String ownerId) {
+        this(filename, 0, 0, categorizationId, ownerId);
     }
     
-    public Scroll(String filename, int numberOfUploads, int numberOfDownloads, String categorizationId) {
+    public Scroll(String filename, int numberOfUploads, int numberOfDownloads, String categorizationId, String ownerId) {
         this.filename = filename;
         this.numberOfUploads = numberOfUploads;
         this.numberOfDownloads = numberOfDownloads;
         this.categorizationId = categorizationId;
+        this.ownerId = ownerId;
     }
 
     // Getters
@@ -57,5 +59,18 @@ public class Scroll {
 
     public void incrementDownloads() {
         this.numberOfDownloads++;
+    }
+    
+    // Owner-related methods
+    public String getOwnerId() {
+        return ownerId;
+    }
+    
+    public void setOwnerId(String ownerId) {
+        this.ownerId = ownerId;
+    }
+    
+    public boolean isOwnedBy(String userId) {
+        return this.ownerId != null && this.ownerId.equals(userId);
     }
 }

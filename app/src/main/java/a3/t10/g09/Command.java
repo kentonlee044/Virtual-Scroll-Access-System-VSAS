@@ -71,6 +71,13 @@ public enum Command {
 //
 //        }
 //    },
+    UPLOAD_SCROLL(EnumSet.of(ClientStatus.GENERIC_USER, ClientStatus.ADMIN), "Upload a new scroll") {
+        @Override
+        public void execute(Scanner scanner, Client client) {
+            new ScrollUpload(scanner, client.getCurrentUser().getIdkey()).run();
+        }
+    },
+    
     EXIT(EnumSet.allOf(ClientStatus.class), "Exit") {
         @Override
         public void execute(Scanner scanner, Client client) {
