@@ -27,6 +27,25 @@ public class ProfileUpdateHandler {
         this.persistedUser = resolvePersistedUser(user, userList);
     }
 
+    private void updateScrollOwnership(String oldOwnerId, String newOwnerId) {
+        // Load all scrolls
+        ScrollList scrolls = ScrollJSONHandler.loadFromJson();
+        boolean updated = false;
+        
+        // Find all scrolls owned by the old ID and update them
+        for (Scroll scroll : scrolls.getAllScrolls()) {
+            if (scroll.getOwnerId() != null && scroll.getOwnerId().equals(oldOwnerId)) {
+                scroll.setOwnerId(newOwnerId);
+                updated = true;
+            }
+        }
+        
+        // Save changes if any updates were made
+        if (updated) {
+            ScrollJSONHandler.saveToJson(scrolls);
+        }
+    }
+
     private User resolvePersistedUser(User user, UserList list) {
         if (user == null) {
             return null;
@@ -134,8 +153,12 @@ public class ProfileUpdateHandler {
         if (target == null) {
             return "Unable to locate user record.";
         }
-
+        String oldIDKey = target.getIdkey();
+        
         target.setIdkey(newIDKey);
+
+        updateScrollOwnership(oldIDKey, newIDKey);
+
         persistAndSync();
         return null;
     }
