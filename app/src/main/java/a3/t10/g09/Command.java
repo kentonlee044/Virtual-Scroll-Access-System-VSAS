@@ -12,10 +12,11 @@ public enum Command {
     LOGIN(EnumSet.of(ClientStatus.ANONYMOUS), "Log in") {
         @Override
         public void execute(Scanner scanner, Client client) {
-            // if successful, set clientStatus = ClientStatus.GENERIC_USER or ClientStatus.ADMIN
+            // if successful, set clientStatus = ClientStatus.GENERIC_USER or
+            // ClientStatus.ADMIN
             User loggedIn = new LoginCli(scanner).run();
             if (loggedIn != null) {
-                switch(loggedIn.getRole()) {
+                switch (loggedIn.getRole()) {
                     case "admin":
                         client.setStatus(ClientStatus.ADMIN);
                         break;
@@ -58,44 +59,58 @@ public enum Command {
             new AdminUserManagement(scanner).run(client.getCurrentUser());
         }
     },
-//    // maybe a separate command for creating a new admin account is needed?
-//    ADD_USER(EnumSet.of(ClientStatus.ADMIN), "Add a user to the system") {
-//        @Override
-//        public void execute(Scanner scanner, Client client) {
-//
-//        }
-//    },
-//    REMOVE_USER(EnumSet.of(ClientStatus.ADMIN), "Remove a user from the system") {
-//        @Override
-//        public void execute(Scanner scanner, Client client) {
-//
-//        }
-//    },
+    // // maybe a separate command for creating a new admin account is needed?
+    // ADD_USER(EnumSet.of(ClientStatus.ADMIN), "Add a user to the system") {
+    // @Override
+    // public void execute(Scanner scanner, Client client) {
+    //
+    // }
+    // },
+    // REMOVE_USER(EnumSet.of(ClientStatus.ADMIN), "Remove a user from the system")
+    // {
+    // @Override
+    // public void execute(Scanner scanner, Client client) {
+    //
+    // }
+    // },
     NEW_SCROLL(EnumSet.of(ClientStatus.GENERIC_USER, ClientStatus.ADMIN), "Upload a new scroll") {
         @Override
         public void execute(Scanner scanner, Client client) {
             new ScrollUpload(scanner, client.getCurrentUser().getIdkey()).run();
         }
     },
-    
-    UPLOAD_REPLACEMENT_SCROLL(EnumSet.of(ClientStatus.GENERIC_USER, ClientStatus.ADMIN), "Replace existing scroll with a new upload") {
+
+    UPLOAD_REPLACEMENT_SCROLL_content(EnumSet.of(ClientStatus.GENERIC_USER, ClientStatus.ADMIN),
+            "Update existing scroll content") {
+        @Override
+        public void execute(Scanner scanner, Client client) {
+            User current = client.getCurrentUser();
+            if (current == null) {
+                System.out.println("No user session detected. Please log in first.");
+                return;
+            }
+            new ScrollReplacementCli(scanner, current).run();
+        }
+    },
+
+    UPLOAD_REPLACEMENT_SCROLL(EnumSet.of(ClientStatus.GENERIC_USER, ClientStatus.ADMIN),
+            "Update existing scroll name") {
         @Override
         public void execute(Scanner scanner, Client client) {
             new ScrollUpload(scanner, client.getCurrentUser().getIdkey()).replaceExisting();
         }
     },
-    
+
     EXIT(EnumSet.allOf(ClientStatus.class), "Exit") {
         @Override
         public void execute(Scanner scanner, Client client) {
             System.out.println("Goodbye.");
             System.exit(0);
         }
-    }
-    ;
+    };
+
     private final Set<ClientStatus> allowedUsers;
     private final String description;
-
 
     Command(Set<ClientStatus> allowedUsers, String description) {
         this.allowedUsers = allowedUsers;
