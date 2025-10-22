@@ -49,7 +49,7 @@ public enum Command {
     CHANGE_DETAILS(EnumSet.of(ClientStatus.GENERIC_USER, ClientStatus.ADMIN), "Update user profile") {
         @Override
         public void execute(Scanner scanner, Client client) {
-            new CommandMenu(scanner).launchProfileUpdater(client.getCurrentUser());
+            SubMenuUIHandler.launchUpdateHandler(scanner, client.getCurrentUser());
         }
     },
     MANAGE_USERS(EnumSet.of(ClientStatus.ADMIN), "Manage Users") {
