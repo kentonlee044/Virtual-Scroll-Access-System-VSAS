@@ -21,7 +21,7 @@ public class Client {
         switch(clientStatus) {
             case ANONYMOUS:
                 return "Anonymous";
-            case LOGGED_IN:
+            case GENERIC_USER:
                 return "Generic User"; // a.k.a a generic, logged-in user.
             case ADMIN:
                 return "Administrator";
@@ -33,14 +33,19 @@ public class Client {
         ArrayList<Command> available = new ArrayList<>();
         for (Command cmd : Command.values()) {
             if (cmd.isAllowed(this.clientStatus)) {
-                available.add(cmd);                break;
+                available.add(cmd);
             }
         }
         Command[] returnArray = available.toArray(new Command[0]);
 
         return returnArray;
-        
     }
 
+
+    public void setUser(User user) { this.currentUser = user;}
+    public void removeUser() { this.currentUser = null;}
+    public void setStatus(ClientStatus status) { this.clientStatus = status;}
+
     public User getCurrentUser() { return this.currentUser;}
+    public ClientStatus getStatus() { return this.clientStatus;}
 }

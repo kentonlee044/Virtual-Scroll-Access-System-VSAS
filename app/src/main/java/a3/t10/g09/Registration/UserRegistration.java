@@ -6,17 +6,17 @@ import com.google.gson.stream.JsonReader;
 
 import a3.t10.g09.User;
 import a3.t10.g09.UserList;
-import a3.t10.g09.validator.AtSymbolValidator;
-import a3.t10.g09.validator.DomainDotValidator;
-import a3.t10.g09.validator.EmailUniqueValidator;
-import a3.t10.g09.validator.IDKeyFormatValidator;
-import a3.t10.g09.validator.IDKeyUniqueValidator;
-import a3.t10.g09.validator.NameValidator;
-import a3.t10.g09.validator.PasswordLengthValidator;
-import a3.t10.g09.validator.PasswordSpecialCharValidator;
-import a3.t10.g09.validator.PhoneDigitValidator;
-import a3.t10.g09.validator.PhoneLengthValidator;
-import a3.t10.g09.validator.Validator;
+import a3.t10.g09.Validator.AtSymbolValidator;
+import a3.t10.g09.Validator.DomainDotValidator;
+import a3.t10.g09.Validator.EmailUniqueValidator;
+import a3.t10.g09.Validator.IDKeyFormatValidator;
+import a3.t10.g09.Validator.IDKeyUniqueValidator;
+import a3.t10.g09.Validator.NameValidator;
+import a3.t10.g09.Validator.PasswordLengthValidator;
+import a3.t10.g09.Validator.PasswordSpecialCharValidator;
+import a3.t10.g09.Validator.PhoneDigitValidator;
+import a3.t10.g09.Validator.PhoneLengthValidator;
+import a3.t10.g09.Validator.Validator;
 
 import java.io.FileReader;
 import java.io.FileWriter;

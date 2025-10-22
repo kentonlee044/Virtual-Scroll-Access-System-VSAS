@@ -1,55 +1,87 @@
 package a3.t10.g09;
 
+import a3.t10.g09.Login.LoginCli;
+import a3.t10.g09.Registration.RegisterCli;
+
 import java.util.EnumSet;
 import java.util.Set;
+import java.util.Scanner;
 
 public enum Command {
+
+    LOGIN(EnumSet.of(ClientStatus.ANONYMOUS), "Log in") {
+        @Override
+        public void execute(Scanner scanner, Client client) {
+            // if successful, set clientStatus = ClientStatus.GENERIC_USER or ClientStatus.ADMIN
+            User loggedIn = new LoginCli(scanner).run();
+            if (loggedIn != null) {
+                switch(loggedIn.getRole()) {
+                    case "admin":
+                        client.setStatus(ClientStatus.ADMIN);
+                        break;
+                    case "user":
+                        client.setStatus(ClientStatus.GENERIC_USER);
+                        break;
+                }
+                client.setUser(loggedIn);
+            }
+        }
+    },
+    REGISTER(EnumSet.of(ClientStatus.ANONYMOUS), "Register") {
+        @Override
+        public void execute(Scanner scanner, Client client) {
+            new RegisterCli(scanner).run();
+        }
+    },
     VIEW_SCROLLS(EnumSet.allOf(ClientStatus.class), "View the scrolls in the database.") {
         @Override
-        public void execute() {
-            
+        public void execute(Scanner scanner, Client client) {
+            new AdminSystemAnalytics().displayAllScrolls();
         }
     },
-    LOGIN(EnumSet.of(ClientStatus.ANONYMOUS), "Log in with a valid username and password.") {
+    LOG_OUT(EnumSet.of(ClientStatus.GENERIC_USER, ClientStatus.ADMIN), "Log out") {
         @Override
-        public void execute() {
-            // if successful, set clientStatus = ClientStatus.LOGGED_IN or ClientStatus.ADMIN
+        public void execute(Scanner scanner, Client client) {
+            client.setStatus(ClientStatus.ANONYMOUS);
+            client.removeUser();
         }
     },
-    SIGN_OUT(EnumSet.of(ClientStatus.LOGGED_IN, ClientStatus.ADMIN), "Sign out of the active profile.") {
+    CHANGE_DETAILS(EnumSet.of(ClientStatus.GENERIC_USER, ClientStatus.ADMIN), "Update user profile") {
         @Override
-        public void execute() {
-            
+        public void execute(Scanner scanner, Client client) {
+            SubMenuUIHandler.launchUpdateHandler(scanner, client.getCurrentUser());
         }
     },
-    CHANGE_DETAILS(EnumSet.of(ClientStatus.LOGGED_IN, ClientStatus.ADMIN), "Change the active profile's details including password") {
+    MANAGE_USERS(EnumSet.of(ClientStatus.ADMIN), "Manage Users") {
         @Override
-        public void execute() {
-            return;
+        public void execute(Scanner scanner, Client client) {
+            new AdminUserManagement(scanner).run(client.getCurrentUser());
         }
     },
-    VIEW_USERS(EnumSet.of(ClientStatus.ADMIN), "View all users and their profiles") {
+//    // maybe a separate command for creating a new admin account is needed?
+//    ADD_USER(EnumSet.of(ClientStatus.ADMIN), "Add a user to the system") {
+//        @Override
+//        public void execute(Scanner scanner, Client client) {
+//
+//        }
+//    },
+//    REMOVE_USER(EnumSet.of(ClientStatus.ADMIN), "Remove a user from the system") {
+//        @Override
+//        public void execute(Scanner scanner, Client client) {
+//
+//        }
+//    },
+    EXIT(EnumSet.allOf(ClientStatus.class), "Exit") {
         @Override
-        public void execute() {
-            
-        }
-    },
-    // maybe a separate command for creating a new admin account is needed?
-    ADD_USER(EnumSet.of(ClientStatus.ADMIN), "Add a user to the system") {
-        @Override
-        public void execute() {
-            
-        }
-    },
-    REMOVE_USER(EnumSet.of(ClientStatus.ADMIN), "Remove a user from the system") {
-        @Override
-        public void execute() {
-            
+        public void execute(Scanner scanner, Client client) {
+            System.out.println("Goodbye.");
+            System.exit(0);
         }
     }
     ;
     private final Set<ClientStatus> allowedUsers;
     private final String description;
+
 
     Command(Set<ClientStatus> allowedUsers, String description) {
         this.allowedUsers = allowedUsers;
@@ -64,5 +96,5 @@ public enum Command {
         return this.description;
     }
 
-    public abstract void execute();
+    public abstract void execute(Scanner scanner, Client client);
 }

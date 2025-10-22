@@ -1,4 +1,4 @@
-package a3.t10.g09.validator;
+package a3.t10.g09.Validator;
 
 public class AtSymbolValidator implements Validator {
     @Override
