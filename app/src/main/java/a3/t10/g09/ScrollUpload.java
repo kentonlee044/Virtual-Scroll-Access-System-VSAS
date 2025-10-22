@@ -8,6 +8,8 @@ import a3.t10.g09.Validator.ScrollCategorizationIdValidator;
 import a3.t10.g09.Validator.ScrollFilenameValidator;
 import a3.t10.g09.Validator.Validator;
 
+import java.io.File;
+
 public class ScrollUpload {
     private final Scanner scanner;
     private final String ownerId;
@@ -137,6 +139,12 @@ public class ScrollUpload {
             candidate = scanner.nextLine().trim();
             String error = filenameValidator.validate(candidate);
             if (error == null) {
+                // Check that the provided path exists and is a file
+                File file = new File(candidate);
+                if (!file.exists() || !file.isFile()) {
+                    status = "File not found at path: " + candidate;
+                    continue;
+                }
                 filename = candidate;
                 break;
             }
