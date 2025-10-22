@@ -60,6 +60,14 @@ public class Scroll {
     public void incrementDownloads() {
         this.numberOfDownloads++;
     }
+
+    public void resetUploads() {
+        this.numberOfUploads = 0;
+    }
+
+    public void resetDownloads() {
+        this.numberOfDownloads = 0;
+    }
     
     // Owner-related methods
     public String getOwnerId() {
