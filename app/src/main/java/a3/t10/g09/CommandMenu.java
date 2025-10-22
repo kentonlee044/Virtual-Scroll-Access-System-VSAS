@@ -75,7 +75,7 @@ public class CommandMenu {
         }
     }
 
-    private void launchProfileUpdater(User user) {
+    public void launchProfileUpdater(User user) {
         UserList userList = userLogin.getUserData();
         ProfileUpdateController controller = new ProfileUpdateController(user, userList);
         controller.displayMenu();
