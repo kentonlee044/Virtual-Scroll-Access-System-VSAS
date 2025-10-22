@@ -27,8 +27,7 @@ public class ScrollList {
 
     // Upload a new binary file to replace a scroll
     public boolean replaceExistingScroll(String oldFileName,String newFileName, String ownerID) {
-        List<Scroll> ownedScrolls = this.getScrollsByOwner(ownerID);
-        for (Scroll scroll : ownedScrolls) {
+        for (Scroll scroll : scrolls) {
             if (scroll.getFilename().equals(oldFileName)) {
                 scroll.setFilename(newFileName);
                 scroll.resetDownloads();

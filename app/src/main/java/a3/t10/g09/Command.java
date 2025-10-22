@@ -81,7 +81,7 @@ public enum Command {
     UPLOAD_REPLACEMENT_SCROLL(EnumSet.of(ClientStatus.GENERIC_USER, ClientStatus.ADMIN), "Replace existing scroll with a new upload") {
         @Override
         public void execute(Scanner scanner, Client client) {
-            new ScrollUpload(scanner, client.getCurrentUser().getIdkey()).run();
+            new ScrollUpload(scanner, client.getCurrentUser().getIdkey()).replaceExisting();
         }
     },
     
