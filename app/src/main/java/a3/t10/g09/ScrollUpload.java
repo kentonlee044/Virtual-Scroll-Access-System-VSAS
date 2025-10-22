@@ -1,6 +1,7 @@
 package a3.t10.g09;
 
 import a3.t10.g09.Validator.ScrollCategorizationIdValidator;
+import a3.t10.g09.Validator.ScrollCategorizationIdUniqueValidator;
 import a3.t10.g09.Validator.ScrollFilenameValidator;
 import a3.t10.g09.Validator.Validator;
 
@@ -81,6 +82,15 @@ public class ScrollUpload {
         printBorder('└', '─', '┘');
     }
 
+    private static String firstError(String... messages) {
+        for (String message : messages) {
+            if (message != null && !message.isBlank()) {
+                return message;
+            }
+        }
+        return null;
+    }
+
     private boolean waitForLine() {
         if (!scanner.hasNextLine()) {
             System.out.println("No input detected. Exiting.");
@@ -116,6 +126,9 @@ public class ScrollUpload {
         // Prompt categorization ID (optional)
         status = "Enter categorization ID (optional):";
         candidate = categorizationId;
+        // prepare uniqueness validator against current data
+        ScrollList existingScrolls = ScrollJSONHandler.loadFromJson();
+        ScrollCategorizationIdUniqueValidator uniqueValidator = new ScrollCategorizationIdUniqueValidator(existingScrolls);
         while (true) {
             renderFormUpload(status, INPUT_HINT, filename, candidate);
             System.out.print("> ");
@@ -128,7 +141,10 @@ public class ScrollUpload {
                 categorizationId = "";
                 break;
             }
-            String error = categorizationIdValidator.validate(candidate);
+            String error = firstError(
+                    categorizationIdValidator.validate(candidate),
+                    uniqueValidator.validate(candidate)
+            );
             if (error == null) {
                 categorizationId = candidate;
                 break;

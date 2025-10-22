@@ -5,5 +5,12 @@
     "numberOfDownloads": 0,
     "categorizationId": "fantastic",
     "ownerId": "jloparc"
+  },
+  {
+    "filename": "hellohello.txt",
+    "numberOfUploads": 0,
+    "numberOfDownloads": 0,
+    "categorizationId": "",
+    "ownerId": "jloparc"
   }
 ]
