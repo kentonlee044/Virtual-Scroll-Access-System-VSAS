@@ -6,7 +6,7 @@ public final class DisplayUITable {
     private DisplayUITable(){}
 
 
-    public static void printMenu(Command[] commands, MenuTitle title) {
+    public static void printMenu(Command[] commands, MenuTitle title, Client client) {
         int longest = findLongestLine(commands, title);
 
         if (longest < minimumBoxWidth) {
@@ -17,6 +17,16 @@ public final class DisplayUITable {
         System.out.println("│  " + " " + title.getTitle() +
                 " ".repeat(longest - title.getTitle().length() - 1) + "|");
         System.out.println("├──" + "─".repeat(longest + 1) + "┤");
+        // print the user and their status
+        switch (client.getStatus()) {
+            case ClientStatus.ANONYMOUS:
+                // print "You are logged in as a guest"
+                break;
+            case ClientStatus.GENERIC_USER:
+                // print "You are logged in as the generic user '<user id>'
+            case ClientStatus.ADMIN:
+                // print "You are logged in as the administrator '<user id>."
+        }
 
         // print each row of available commands
         for (int i = 0; i < commands.length; i++) {

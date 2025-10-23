@@ -59,27 +59,12 @@ public enum Command {
             new AdminUserManagement(scanner).run(client.getCurrentUser());
         }
     },
-    // // maybe a separate command for creating a new admin account is needed?
-    // ADD_USER(EnumSet.of(ClientStatus.ADMIN), "Add a user to the system") {
-    // @Override
-    // public void execute(Scanner scanner, Client client) {
-    //
-    // }
-    // },
-    // REMOVE_USER(EnumSet.of(ClientStatus.ADMIN), "Remove a user from the system")
-    // {
-    // @Override
-    // public void execute(Scanner scanner, Client client) {
-    //
-    // }
-    // },
     NEW_SCROLL(EnumSet.of(ClientStatus.GENERIC_USER, ClientStatus.ADMIN), "Upload a new scroll") {
         @Override
         public void execute(Scanner scanner, Client client) {
             new ScrollUpload(scanner, client.getCurrentUser().getIdkey()).run();
         }
     },
-
     UPLOAD_REPLACEMENT_SCROLL_content(EnumSet.of(ClientStatus.GENERIC_USER, ClientStatus.ADMIN),
             "Update existing scroll content") {
         @Override
@@ -92,7 +77,6 @@ public enum Command {
             new ScrollReplacementCli(scanner, current).run();
         }
     },
-
     UPLOAD_REPLACEMENT_SCROLL(EnumSet.of(ClientStatus.GENERIC_USER, ClientStatus.ADMIN),
             "Update existing scroll name") {
         @Override
@@ -100,7 +84,12 @@ public enum Command {
             new ScrollUpload(scanner, client.getCurrentUser().getIdkey()).replaceExisting();
         }
     },
-
+    REMOVE_SCROLL(EnumSet.of(ClientStatus.GENERIC_USER, ClientStatus.ADMIN), "Remove a scroll") {
+        @Override
+        public void execute(Scanner scanner, Client client) {
+            new ScrollRemove(scanner, client.getCurrentUser()).run();
+        }
+    },
     EXIT(EnumSet.allOf(ClientStatus.class), "Exit") {
         @Override
         public void execute(Scanner scanner, Client client) {

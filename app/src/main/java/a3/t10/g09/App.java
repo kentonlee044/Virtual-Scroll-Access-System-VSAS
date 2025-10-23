@@ -69,7 +69,7 @@ public class App {
         Scanner scanner = new Scanner(System.in);
         while (true) {
             Command[] commands = app.client.getAvailableCommands();
-            DisplayUITable.printMenu(commands, MenuTitle.MAIN);
+            DisplayUITable.printMenu(commands, MenuTitle.MAIN, app.client);
             if (!scanner.hasNextLine()) {
                 System.out.println("No input detected. Exiting.");
                 return;
