@@ -171,7 +171,6 @@ public class ScrollUpload {
                 return;
             }
             candidate = scanner.nextLine().trim();
-            // Make categorization ID compulsory
             if (candidate.isEmpty()) {
                 status = "Categorization ID is required.";
                 continue;
@@ -268,6 +267,7 @@ public class ScrollUpload {
         // Prompt new filename (required)
         status = "Enter new filename:";
         candidate = newFileName;
+        ScrollList scrolls = ScrollJSONHandler.loadFromJson();
         while (true) {
             renderFormReplace(status, 
                               INPUT_HINT,
@@ -279,12 +279,19 @@ public class ScrollUpload {
                 System.out.println("No input detected. Exiting.");
                 return;
             }
+        
             candidate = scanner.nextLine().trim();
             if(candidate.isEmpty()){
                 status = "Filename cannot be empty.";
-                break;
+                continue;
             }
+
             String error = firstError(filenameValidator.validate(candidate));
+            
+            if (scrolls.getScroll(candidate) != null) {
+                    status = "A scroll with this filename already exists. Please choose a different name.";
+                    continue;
+            }
             if (error == null) {
                 newFileName = candidate;
                 break;
@@ -293,13 +300,12 @@ public class ScrollUpload {
         }
 
         // Review
-        renderFormReplace("Review replacement", SUBMIT_HINT, ownerID, oldFileName, newFileName);
+        renderFormReplace(status, SUBMIT_HINT, ownerID, oldFileName, newFileName);
         if (!waitForLine()) {
             return;
         }
 
         // Replace and save the scroll
-        ScrollList scrolls = ScrollJSONHandler.loadFromJson();
         boolean replaced = scrolls.replaceExistingScroll(oldFileName, newFileName, ownerID);
         
         if (replaced && ScrollJSONHandler.saveToJson(scrolls)) {
