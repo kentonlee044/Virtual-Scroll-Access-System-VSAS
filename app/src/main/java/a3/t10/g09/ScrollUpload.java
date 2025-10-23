@@ -129,6 +129,8 @@ public class ScrollUpload {
         // Prompt filename (required)
         String status = "Enter filename:";
         String candidate = filename;
+        // Load existing scrolls once for validations (filename uniqueness and categorization ID uniqueness)
+        ScrollList existingScrolls = ScrollJSONHandler.loadFromJson();
         while (true) {
             renderFormUpload(status, INPUT_HINT, candidate, categorizationId);
             System.out.print("> ");
@@ -145,6 +147,11 @@ public class ScrollUpload {
                     status = "File not found at path: " + candidate;
                     continue;
                 }
+                // Enforce uniqueness of filename against existing scrolls
+                if (existingScrolls.getScroll(candidate) != null) {
+                    status = "A scroll with this filename already exists. Please choose a different name.";
+                    continue;
+                }
                 filename = candidate;
                 break;
             }
@@ -152,10 +159,9 @@ public class ScrollUpload {
         }
 
         // Prompt categorization ID (optional)
-        status = "Enter categorization ID (optional):";
+        status = "Enter categorization ID:";
         candidate = categorizationId;
         // prepare uniqueness validator against current data
-        ScrollList existingScrolls = ScrollJSONHandler.loadFromJson();
         ScrollCategorizationIdUniqueValidator uniqueValidator = new ScrollCategorizationIdUniqueValidator(existingScrolls);
         while (true) {
             renderFormUpload(status, INPUT_HINT, filename, candidate);
@@ -165,9 +171,10 @@ public class ScrollUpload {
                 return;
             }
             candidate = scanner.nextLine().trim();
+            // Make categorization ID compulsory
             if (candidate.isEmpty()) {
-                categorizationId = "";
-                break;
+                status = "Categorization ID is required.";
+                continue;
             }
             String error = firstError(
                     categorizationIdValidator.validate(candidate),
