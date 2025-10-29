@@ -121,17 +121,22 @@ public class AdminSystemAnalytics {
                 System.out.println("Enter scroll name to preview: ");
                 String scrollToPreview = scanner.nextLine().trim();
                 String content = ScrollJSONHandler.previewScroll(scrollToPreview);
-                if(content == null || content.isEmpty()){
-                    System.out.println("Scroll is empty or does not exist.");
+                
+                // Check if local has filename 
+                if(content == null){
+                    System.out.println("Scroll does not exist. Please enter an existing scroll name");
+                } else if(content.isEmpty()){
+                    System.out.println("Scroll content is empty");
                 }
-
-                System.out.println("\n--- Scroll Content Start ---\n");
-                System.out.println(content);
-                System.out.println("\n--- Scroll Content End ---\n");
-                System.out.println("Press Enter to continue...");
-                if (!scanner.hasNextLine()) {
-                    System.out.println("No input detected. Exiting.");
-                    break;
+                else{
+                    System.out.println("\n--- Scroll Content Start ---\n");
+                    System.out.println(content);
+                    System.out.println("\n--- Scroll Content End ---\n");
+                    System.out.println("Press Enter to continue...");
+                    if (!scanner.hasNextLine()) {
+                        System.out.println("No input detected. Exiting.");
+                        break;
+                    }
                 }
                 scanner.nextLine();
             } else{
