@@ -5,11 +5,12 @@ import java.util.Scanner;
 import java.util.stream.Collectors;
 
 public class AdminSystemAnalytics {
-    private static final String HORIZONTAL_LINE = "┌────────────────────────────────────────────────────────┐";
-    private static final String BOTTOM_LINE = "└───────────────────────────┴────────┴──────────┴──────────┘";
-    private static final String HEADER = "│ %-54s │";
-    private static final String ROW_HEADER = "│ %-25s │ %-6s │ %-8s │ %-8s │";
-    private static final String ROW_FORMAT = "│ %-25s │ %6d │ %8d │ %-8s │";
+    // Simple ASCII table formatting (no box-drawing characters)
+    private static final String TABLE_TITLE_FORMAT = "%-120s";
+    private static final String TABLE_HEADER_FORMAT = "%-25s | %-16s | %-36s | %8s | %10s | %-25s";
+    private static final String TABLE_ROW_FORMAT    = "%-25s | %-16s | %-36s | %8d | %10d | %-25s";
+    private static final String TABLE_SEPARATOR     =
+            "--------------------------+------------------+--------------------------------------+----------+------------+-------------------------";
     
     private ScrollList scrollList;
     private final Scanner scanner;
@@ -30,15 +31,14 @@ public class AdminSystemAnalytics {
         boolean running = true;
         
         while (running) {
-            System.out.println("\n" + HORIZONTAL_LINE);
-            System.out.println(String.format(HEADER, "ADMIN SYSTEM ANALYTICS"));
-            System.out.println(String.format(HEADER, ""));
-            
+            System.out.println();
+            System.out.println("ADMIN SYSTEM ANALYTICS");
+            System.out.println(TABLE_SEPARATOR);
             // Display filter options
-            System.out.println(String.format(HEADER, "1. Show all scrolls"));
-            System.out.println(String.format(HEADER, "2. Filter by category ID"));
-            System.out.println(String.format(HEADER, "0. Exit"));
-            System.out.println(BOTTOM_LINE);
+            System.out.println("1. Show all scrolls");
+            System.out.println("2. Filter by category ID");
+            System.out.println("0. Exit");
+            System.out.println(TABLE_SEPARATOR);
             
             System.out.print("\nSelect an option: ");
             String input = scanner.nextLine().trim();
@@ -93,25 +93,29 @@ public class AdminSystemAnalytics {
                 scanner.nextLine();
                 return;
             }
-            System.out.println("\n" + HORIZONTAL_LINE);
-            System.out.println(String.format(HEADER, title));
-            System.out.println("├───────────────────────────┼────────┼──────────┼──────────┤");
-            System.out.println(String.format(ROW_HEADER, "SCROLL NAME", "UPLOADS", "DOWNLOADS", "CATEGORY"));
-            System.out.println("├───────────────────────────┼────────┼──────────┼──────────┤");
+            System.out.println();
+            System.out.println(String.format(TABLE_TITLE_FORMAT, title));
+            System.out.println(TABLE_SEPARATOR);
+            System.out.println(String.format(TABLE_HEADER_FORMAT, "OWNER ID", "CATEGORY ID", "FILENAME", "UPLOADS", "DOWNLOADS", "UPLOAD DATE"));
+            System.out.println(TABLE_SEPARATOR);
             
             for (Scroll scroll : scrollsToDisplay) {
+                String owner = scroll.getOwnerId() == null ? "" : scroll.getOwnerId();
                 String category = scroll.getCategorizationId();
                 if (category == null || category.isEmpty()) {
                     category = "N/A";
                 }
-                System.out.println(String.format(ROW_FORMAT, 
-                        truncate(scroll.getFilename(), 25),
+                String filename = scroll.getFilename() == null ? "" : scroll.getFilename();
+                String date = scroll.getUploadDate() == null || scroll.getUploadDate().isEmpty() ? "N/A" : scroll.getUploadDate();
+                System.out.println(String.format(TABLE_ROW_FORMAT,
+                        truncate(owner, 25),
+                        truncate(category, 16),
+                        truncate(filename, 36),
                         scroll.getNumberOfUploads(),
                         scroll.getNumberOfDownloads(),
-                        truncate(category, 8)));
+                        truncate(date, 25)));
             }
-            
-            System.out.println(BOTTOM_LINE);
+            System.out.println(TABLE_SEPARATOR);
             System.out.println("\nEnter download or preview to proceed, or press Enter to return: ");
             String token = scanner.nextLine().trim();
             if(token.equals("")){

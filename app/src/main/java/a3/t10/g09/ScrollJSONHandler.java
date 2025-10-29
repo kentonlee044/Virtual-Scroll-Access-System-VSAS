@@ -29,6 +29,10 @@ public class ScrollJSONHandler {
                     if (scroll.getOwnerId() == null) {
                         scroll.setOwnerId("system");
                     }
+                    // Ensure uploadDate is non-null for legacy data
+                    if (scroll.getUploadDate() == null) {
+                        scroll.setUploadDate("");
+                    }
                     scrollList.addScroll(scroll);
                 }
             }
