@@ -85,33 +85,60 @@ public class AdminSystemAnalytics {
     }
     
     private void displayScrolls(List<Scroll> scrollsToDisplay, String title) {
-        if (scrollsToDisplay == null || scrollsToDisplay.isEmpty()) {
-            System.out.println("\nNo scrolls found.");
-            System.out.println("Press Enter to continue...");
-            scanner.nextLine();
-            return;
-        }
-        System.out.println("\n" + HORIZONTAL_LINE);
-        System.out.println(String.format(HEADER, title));
-        System.out.println("├───────────────────────────┼────────┼──────────┼──────────┤");
-        System.out.println(String.format(ROW_HEADER, "SCROLL NAME", "UPLOADS", "DOWNLOADS", "CATEGORY"));
-        System.out.println("├───────────────────────────┼────────┼──────────┼──────────┤");
-        
-        for (Scroll scroll : scrollsToDisplay) {
-            String category = scroll.getCategorizationId();
-            if (category == null || category.isEmpty()) {
-                category = "N/A";
+        while(true){
+
+            if (scrollsToDisplay == null || scrollsToDisplay.isEmpty()) {
+                System.out.println("\nNo scrolls found.");
+                System.out.println("Press Enter to continue...");
+                scanner.nextLine();
+                return;
             }
-            System.out.println(String.format(ROW_FORMAT, 
-                    truncate(scroll.getFilename(), 25),
-                    scroll.getNumberOfUploads(),
-                    scroll.getNumberOfDownloads(),
-                    truncate(category, 8)));
+            System.out.println("\n" + HORIZONTAL_LINE);
+            System.out.println(String.format(HEADER, title));
+            System.out.println("├───────────────────────────┼────────┼──────────┼──────────┤");
+            System.out.println(String.format(ROW_HEADER, "SCROLL NAME", "UPLOADS", "DOWNLOADS", "CATEGORY"));
+            System.out.println("├───────────────────────────┼────────┼──────────┼──────────┤");
+            
+            for (Scroll scroll : scrollsToDisplay) {
+                String category = scroll.getCategorizationId();
+                if (category == null || category.isEmpty()) {
+                    category = "N/A";
+                }
+                System.out.println(String.format(ROW_FORMAT, 
+                        truncate(scroll.getFilename(), 25),
+                        scroll.getNumberOfUploads(),
+                        scroll.getNumberOfDownloads(),
+                        truncate(category, 8)));
+            }
+            
+            System.out.println(BOTTOM_LINE);
+            System.out.println("\nEnter download or preview to proceed, or press Enter to return: ");
+            String token = scanner.nextLine().trim();
+            if(token.equals("")){
+                break;
+            }
+            else if(token.equalsIgnoreCase("preview")){
+                System.out.println("Enter scroll name to preview: ");
+                String scrollToPreview = scanner.nextLine().trim();
+                String content = ScrollJSONHandler.previewScroll(scrollToPreview);
+                if(content == null || content.isEmpty()){
+                    System.out.println("Scroll is empty or does not exist.");
+                }
+
+                System.out.println("\n--- Scroll Content Start ---\n");
+                System.out.println(content);
+                System.out.println("\n--- Scroll Content End ---\n");
+                System.out.println("Press Enter to continue...");
+                if (!scanner.hasNextLine()) {
+                    System.out.println("No input detected. Exiting.");
+                    break;
+                }
+                scanner.nextLine();
+            } else{
+                System.out.println("Please enter a valid command.");
+                scanner.nextLine();
+            }
         }
-        
-        System.out.println(BOTTOM_LINE);
-        System.out.println("\nPress Enter to continue...");
-        scanner.nextLine();
     }
     
     private String truncate(String str, int maxLength) {
