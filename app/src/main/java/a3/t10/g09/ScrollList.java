@@ -25,6 +25,17 @@ public class ScrollList {
         return null;
     }
 
+    // Get all scrolls by filename
+    public ScrollList getScrolls(String filename) {
+        ScrollList matches = new ScrollList();
+        for (Scroll scroll : scrolls) {
+            if (scroll.getFilename().equals(filename)) {
+                matches.addScroll(scroll);
+            }
+        }
+        return matches;
+    }
+
     // Upload a new binary file to replace a scroll
     public boolean replaceExistingScroll(String oldFileName,String newFileName, String ownerID) {
         for (Scroll scroll : scrolls) {

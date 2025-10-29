@@ -109,10 +109,24 @@ public class ScrollUpload {
                     status = "File not found at path: " + candidate;
                     continue;
                 }
-                // Enforce uniqueness of filename against existing scrolls
-                if (existingScrolls.getScroll(candidate) != null) {
-                    status = "A scroll with this filename already exists. Please choose a different name.";
-                    continue;
+                // If filename already exists, increment and normalize uploads for all matching scrolls
+                ScrollList matches = existingScrolls.getScrolls(candidate);
+                if (matches != null) {
+                    int currentMax = 0;
+                    for (Scroll s : matches.getAllScrolls()) {
+                        if (s.getNumberOfUploads() > currentMax) {
+                            currentMax = s.getNumberOfUploads();
+                        }
+                    }
+                    int targetUploads = currentMax + 1;
+                    for (Scroll s : matches.getAllScrolls()) {
+                        // Normalize to the same upload count
+                        s.resetUploads();
+                        for (int i = 0; i < targetUploads; i++) {
+                            s.incrementUploads();
+                        }
+                    }
+                    ScrollJSONHandler.saveToJson(matches);
                 }
                 filename = candidate;
                 break;
@@ -120,7 +134,7 @@ public class ScrollUpload {
             status = error;
         }
 
-        // Prompt categorization ID (optional)
+        // Prompt categorization ID
         status = "Enter categorization ID:";
         candidate = categorizationId;
         // prepare uniqueness validator against current data
@@ -156,6 +170,15 @@ public class ScrollUpload {
 
         // Create and save the scroll
         Scroll newScroll = new Scroll(filename, categorizationId, ownerId);
+        Scroll scroll_same_filename = existingScrolls.getScroll(filename);
+        //set # of uploads to the same as any scroll with the same filename
+        if(scroll_same_filename != null){
+            for(int i=0; i<scroll_same_filename.getNumberOfUploads(); i++){
+                newScroll.incrementUploads();
+            }
+        }else{
+            newScroll.incrementUploads();
+        }
         ScrollList scrolls = ScrollJSONHandler.loadFromJson();
         scrolls.addScroll(newScroll);
         if (ScrollJSONHandler.saveToJson(scrolls)) {
