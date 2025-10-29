@@ -3,15 +3,9 @@
  */
 package a3.t10.g09;
 
-import java.util.NoSuchElementException;
 import java.util.Scanner;
 
 import org.mindrot.jbcrypt.BCrypt;
-
-import a3.t10.g09.Registration.RegisterCli;
-import a3.t10.g09.Registration.UserRegistration;
-import a3.t10.g09.Login.LoginCli;
-import a3.t10.g09.Login.UserLogin;
 
 public class App {
     private Client client;
@@ -69,7 +63,7 @@ public class App {
         Scanner scanner = new Scanner(System.in);
         while (true) {
             Command[] commands = app.client.getAvailableCommands();
-            DisplayUITable.printMenu(commands, MenuTitle.MAIN, app.client);
+            DisplayUIContent.printMainMenu(commands, MenuTitle.MAIN, app.client);
             if (!scanner.hasNextLine()) {
                 System.out.println("No input detected. Exiting.");
                 return;
