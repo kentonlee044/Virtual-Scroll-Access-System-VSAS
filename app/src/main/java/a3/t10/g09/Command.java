@@ -40,6 +40,12 @@ public enum Command {
             new AdminSystemAnalytics().displayAllScrolls();
         }
     },
+    FILTER_SCROLLS(EnumSet.allOf(ClientStatus.class), "Filter scrolls") {
+        @Override
+        public void execute(Scanner scanner, Client client) {
+            new ManageScrollFiltering(scanner).run();
+        }
+    },
     LOG_OUT(EnumSet.of(ClientStatus.GENERIC_USER, ClientStatus.ADMIN), "Log out") {
         @Override
         public void execute(Scanner scanner, Client client) {
