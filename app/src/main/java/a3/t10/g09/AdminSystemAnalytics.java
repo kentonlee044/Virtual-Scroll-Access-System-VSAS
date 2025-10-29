@@ -64,7 +64,7 @@ public class AdminSystemAnalytics {
         displayScrolls(scrollList.getAllScrolls(), "ALL SCROLLS");
     }
     
-    private void filterByCategory() {
+    public void filterByCategory() {
         ensureScrollsLoaded();
         System.out.print("\nEnter category ID to filter (or leave empty to cancel): ");
         String categoryId = scanner.nextLine().trim();
@@ -81,6 +81,67 @@ public class AdminSystemAnalytics {
             System.out.println("\nNo scrolls found with category ID: " + categoryId);
         } else {
             displayScrolls(filteredScrolls, "CATEGORY: " + categoryId);
+        }
+    }
+
+    public void filterByDate() {
+        ensureScrollsLoaded();
+        System.out.print("\nEnter date (YYYY-MM-DD) to filter (or leave empty to cancel): ");
+        String dateStr = scanner.nextLine().trim();
+
+        if (dateStr.isEmpty()) {
+            return;
+        }
+
+        // Match by ISO-8601 date prefix (YYYY-MM-DD) stored in uploadDate
+        List<Scroll> filteredScrolls = scrollList.getAllScrolls().stream()
+                .filter(scroll -> scroll.getUploadDate() != null && scroll.getUploadDate().startsWith(dateStr))
+                .collect(Collectors.toList());
+
+        if (filteredScrolls.isEmpty()) {
+            System.out.println("\nNo scrolls found with upload date: " + dateStr);
+        } else {
+            displayScrolls(filteredScrolls, "DATE: " + dateStr);
+        }
+    }
+    
+    public void filterByOwner() {
+        ensureScrollsLoaded();
+        System.out.print("\nEnter owner ID to filter (or leave empty to cancel): ");
+        String ownerId = scanner.nextLine().trim();
+
+        if (ownerId.isEmpty()) {
+            return;
+        }
+
+        List<Scroll> filteredScrolls = scrollList.getAllScrolls().stream()
+                .filter(scroll -> scroll.getOwnerId() != null && ownerId.equalsIgnoreCase(scroll.getOwnerId()))
+                .collect(Collectors.toList());
+
+        if (filteredScrolls.isEmpty()) {
+            System.out.println("\nNo scrolls found for owner ID: " + ownerId);
+        } else {
+            displayScrolls(filteredScrolls, "OWNER: " + ownerId);
+        }
+    }
+
+    public void filterByFilename() {
+        ensureScrollsLoaded();
+        System.out.print("\nEnter filename to filter (or leave empty to cancel): ");
+        String filename = scanner.nextLine().trim();
+
+        if (filename.isEmpty()) {
+            return;
+        }
+
+        List<Scroll> filteredScrolls = scrollList.getAllScrolls().stream()
+                .filter(scroll -> scroll.getFilename() != null && filename.equalsIgnoreCase(scroll.getFilename()))
+                .collect(Collectors.toList());
+
+        if (filteredScrolls.isEmpty()) {
+            System.out.println("\nNo scrolls found with filename: " + filename);
+        } else {
+            displayScrolls(filteredScrolls, "FILENAME: " + filename);
         }
     }
     
