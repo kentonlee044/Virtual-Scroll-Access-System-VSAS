@@ -14,6 +14,7 @@ import a3.t10.g09.Validator.PasswordLengthValidator;
 import a3.t10.g09.Validator.PasswordSpecialCharValidator;
 import a3.t10.g09.Validator.PhoneDigitValidator;
 import a3.t10.g09.Validator.PhoneLengthValidator;
+import a3.t10.g09.DisplayUIContent;
 
 public class RegisterCli {
 
@@ -257,33 +258,18 @@ public class RegisterCli {
             String password) {
         System.out.print(CLEAR_SCREEN);
         System.out.flush();
-        printBorder('┌', '─', '┐');
-        System.out.println(centerRow("New User"));
-        printBorder('├', '─', '┤');
+        DisplayUIContent.printBorder('┌', '─', '┐');
+        System.out.println(DisplayUIContent.centerRow("New User"));
+        DisplayUIContent.printBorder('├', '─', '┤');
         System.out.println(fieldLine("Full name", fullName, false));
         System.out.println(fieldLine("Email", email, false));
         System.out.println(fieldLine("ID key", idKey, false));
         System.out.println(fieldLine("Phone", phone, false));
         System.out.println(fieldLine("Password", password, true));
-        printBorder('├', '─', '┤');
+        DisplayUIContent.printBorder('├', '─', '┤');
         System.out.println(row(status));
         System.out.println(row(hint));
-        printBorder('└', '─', '┘');
-    }
-
-    private static void printBorder(char left, char fill, char right) {
-        System.out.println(left + String.valueOf(fill).repeat(BOX_WIDTH) + right);
-    }
-
-    private static String centerRow(String text) {
-        String content = text == null ? "" : text;
-        if (content.length() > BOX_WIDTH) {
-            content = content.substring(0, BOX_WIDTH - 1) + "…";
-        }
-        int padding = Math.max(0, BOX_WIDTH - content.length());
-        int leftPad = padding / 2;
-        int rightPad = padding - leftPad;
-        return "│" + " ".repeat(leftPad) + content + " ".repeat(rightPad) + "│";
+        DisplayUIContent.printBorder('└', '─', '┘');
     }
 
     private static String row(String text) {

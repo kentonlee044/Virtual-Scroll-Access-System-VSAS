@@ -30,59 +30,21 @@ public class ScrollUpload {
     private static final String INPUT_HINT = "Press Enter to confirm · Ctrl+C to cancel";
     private static final String SUBMIT_HINT = "Press Enter to submit · Ctrl+C to cancel";
 
-    // Helpers copied/adapted from RegisterCli for consistent UI
-    private static void printBorder(char left, char fill, char right) {
-        System.out.println(left + String.valueOf(fill).repeat(BOX_WIDTH) + right);
-    }
-
-    private static String centerRow(String text) {
-        String content = text == null ? "" : text;
-        if (content.length() > BOX_WIDTH) {
-            content = content.substring(0, BOX_WIDTH - 1) + "…";
-        }
-        int padding = Math.max(0, BOX_WIDTH - content.length());
-        int leftPad = padding / 2;
-        int rightPad = padding - leftPad;
-        return "│" + " ".repeat(leftPad) + content + " ".repeat(rightPad) + "│";
-    }
-
-    private static String row(String text) {
-        String content = text == null ? "" : text;
-        if (content.length() > BOX_WIDTH) {
-            content = content.substring(0, BOX_WIDTH - 1) + "…";
-        }
-        return "│" + String.format("%-" + BOX_WIDTH + "s", content) + "│";
-    }
-
-    private static String padValue(String value) {
-        String content = value == null ? "" : value;
-        if (content.length() > FIELD_WIDTH) {
-            content = content.substring(0, FIELD_WIDTH - 1) + "…";
-        }
-        return String.format("%-" + FIELD_WIDTH + "s", content);
-    }
-
-    private static String fieldLine(String label, String value) {
-        String paddedValue = padValue(value);
-        String content = String.format("%-" + LABEL_WIDTH + "s [%s]", label, paddedValue);
-        return row(content);
-    }
-
     private static void renderFormUpload(String status,
                                          String hint,
                                          String filename,
                                          String categorizationId) {
         System.out.print(CLEAR_SCREEN);
         System.out.flush();
-        printBorder('┌', '─', '┐');
-        System.out.println(centerRow("Upload New Scroll"));
-        printBorder('├', '─', '┤');
-        System.out.println(fieldLine("Filename", filename));
-        System.out.println(fieldLine("Categorization ID", categorizationId));
-        printBorder('├', '─', '┤');
-        System.out.println(row(status));
-        System.out.println(row(hint));
-        printBorder('└', '─', '┘');
+        DisplayUIContent.printBorder('┌', '─', '┐');
+        System.out.println(DisplayUIContent.centerRow("Upload New Scroll"));
+        DisplayUIContent.printBorder('├', '─', '┤');
+        System.out.println(DisplayUIContent.fieldLine("Filename", filename));
+        System.out.println(DisplayUIContent.fieldLine("Categorization ID", categorizationId));
+        DisplayUIContent.printBorder('├', '─', '┤');
+        System.out.println(DisplayUIContent.row(status));
+        System.out.println(DisplayUIContent.row(hint));
+        DisplayUIContent.printBorder('└', '─', '┘');
     }
 
     private static void renderFormReplace(String status,
@@ -92,16 +54,16 @@ public class ScrollUpload {
                                           String newFilename) {
         System.out.print(CLEAR_SCREEN);
         System.out.flush();
-        printBorder('┌', '─', '┐');
-        System.out.println(centerRow("Replace Existing Scroll"));
-        printBorder('├', '─', '┤');
-        System.out.println(fieldLine("ID", ownerID));
-        System.out.println(fieldLine("Old Filename", oldFilename));
-        System.out.println(fieldLine("New Filename", newFilename));
-        printBorder('├', '─', '┤');
-        System.out.println(row(status));
-        System.out.println(row(hint));
-        printBorder('└', '─', '┘');
+        DisplayUIContent.printBorder('┌', '─', '┐');
+        System.out.println(DisplayUIContent.centerRow("Replace Existing Scroll"));
+        DisplayUIContent.printBorder('├', '─', '┤');
+        System.out.println(DisplayUIContent.fieldLine("ID", ownerID));
+        System.out.println(DisplayUIContent.fieldLine("Old Filename", oldFilename));
+        System.out.println(DisplayUIContent.fieldLine("New Filename", newFilename));
+        DisplayUIContent.printBorder('├', '─', '┤');
+        System.out.println(DisplayUIContent.row(status));
+        System.out.println(DisplayUIContent.row(hint));
+        DisplayUIContent.printBorder('└', '─', '┘');
     }
 
     private static String firstError(String... messages) {

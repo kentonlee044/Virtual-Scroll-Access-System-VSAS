@@ -123,57 +123,57 @@ public class ScrollReplacementCli {
     private void renderScrollMenu(String status, String hint, List<Scroll> scrolls) {
         System.out.print(CLEAR_SCREEN);
         System.out.flush();
-        printBorder('┌', '─', '┐');
-        System.out.println(centerRow("Replace Scroll Binary"));
-        printBorder('├', '─', '┤');
+        DisplayUIContent.printBorder('┌', '─', '┐');
+        System.out.println(DisplayUIContent.centerRow("Replace Scroll Binary"));
+        DisplayUIContent.printBorder('├', '─', '┤');
         for (int i = 0; i < scrolls.size(); i++) {
             String entry = String.format("%d) %-45s ID: %s", i + 1, scrolls.get(i).getFilename(),
                     safe(scrolls.get(i).getCategorizationId()));
-            System.out.println(row(entry));
+            System.out.println(DisplayUIContent.row(entry));
         }
-        printBorder('├', '─', '┤');
-        System.out.println(row(status));
-        System.out.println(row(hint));
-        printBorder('└', '─', '┘');
+        DisplayUIContent.printBorder('├', '─', '┤');
+        System.out.println(DisplayUIContent.row(status));
+        System.out.println(DisplayUIContent.row(hint));
+        DisplayUIContent.printBorder('└', '─', '┘');
     }
 
     private void renderFilePrompt(String status, String hint, String filename, String candidatePath) {
         System.out.print(CLEAR_SCREEN);
         System.out.flush();
-        printBorder('┌', '─', '┐');
-        System.out.println(centerRow("Provide Replacement File"));
-        printBorder('├', '─', '┤');
-        System.out.println(fieldLine("Scroll", filename));
-        System.out.println(fieldLine("New file path", candidatePath));
-        printBorder('├', '─', '┤');
-        System.out.println(row(status));
-        System.out.println(row(hint));
-        printBorder('└', '─', '┘');
+        DisplayUIContent.printBorder('┌', '─', '┐');
+        System.out.println(DisplayUIContent.centerRow("Provide Replacement File"));
+        DisplayUIContent.printBorder('├', '─', '┤');
+        System.out.println(DisplayUIContent.fieldLine("Scroll", filename));
+        System.out.println(DisplayUIContent.fieldLine("New file path", candidatePath));
+        DisplayUIContent.printBorder('├', '─', '┤');
+        System.out.println(DisplayUIContent.row(status));
+        System.out.println(DisplayUIContent.row(hint));
+        DisplayUIContent.printBorder('└', '─', '┘');
     }
 
     private void renderMessage(String status, String hint) {
         System.out.print(CLEAR_SCREEN);
         System.out.flush();
-        printBorder('┌', '─', '┐');
-        System.out.println(centerRow("Replace Scroll Binary"));
-        printBorder('├', '─', '┤');
-        System.out.println(row(status));
-        System.out.println(row(hint));
-        printBorder('└', '─', '┘');
+        DisplayUIContent.printBorder('┌', '─', '┐');
+        System.out.println(DisplayUIContent.centerRow("Replace Scroll Binary"));
+        DisplayUIContent.printBorder('├', '─', '┤');
+        System.out.println(DisplayUIContent.row(status));
+        System.out.println(DisplayUIContent.row(hint));
+        DisplayUIContent.printBorder('└', '─', '┘');
     }
 
     private void renderConfirmation(String status, String filename, String storedPath) {
         System.out.print(CLEAR_SCREEN);
         System.out.flush();
-        printBorder('┌', '─', '┐');
-        System.out.println(centerRow("Replacement Complete"));
-        printBorder('├', '─', '┤');
-        System.out.println(fieldLine("Scroll", filename));
-        System.out.println(fieldLine("Stored at", storedPath));
-        printBorder('├', '─', '┤');
-        System.out.println(row(status));
-        System.out.println(row("Press Enter to continue"));
-        printBorder('└', '─', '┘');
+        DisplayUIContent.printBorder('┌', '─', '┐');
+        System.out.println(DisplayUIContent.centerRow("Replacement Complete"));
+        DisplayUIContent.printBorder('├', '─', '┤');
+        System.out.println(DisplayUIContent.fieldLine("Scroll", filename));
+        System.out.println(DisplayUIContent.fieldLine("Stored at", storedPath));
+        DisplayUIContent.printBorder('├', '─', '┤');
+        System.out.println(DisplayUIContent.row(status));
+        System.out.println(DisplayUIContent.row("Press Enter to continue"));
+        DisplayUIContent.printBorder('└', '─', '┘');
     }
 
     private boolean waitForEnter() {
@@ -182,42 +182,6 @@ public class ScrollReplacementCli {
         }
         scanner.nextLine();
         return true;
-    }
-
-    private static void printBorder(char left, char fill, char right) {
-        System.out.println(left + String.valueOf(fill).repeat(BOX_WIDTH) + right);
-    }
-
-    private static String centerRow(String text) {
-        String content = text == null ? "" : text;
-        if (content.length() > BOX_WIDTH) {
-            content = content.substring(0, BOX_WIDTH - 1) + "…";
-        }
-        int padding = Math.max(0, BOX_WIDTH - content.length());
-        int leftPad = padding / 2;
-        int rightPad = padding - leftPad;
-        return "│" + " ".repeat(leftPad) + content + " ".repeat(rightPad) + "│";
-    }
-
-    private static String row(String text) {
-        String content = text == null ? "" : text;
-        if (content.length() > BOX_WIDTH) {
-            content = content.substring(0, BOX_WIDTH - 1) + "…";
-        }
-        return "│" + String.format("%-" + BOX_WIDTH + "s", content) + "│";
-    }
-
-    private static String fieldLine(String label, String value) {
-        String content = String.format("%-" + LABEL_WIDTH + "s [%s]", label, padValue(value));
-        return row(content);
-    }
-
-    private static String padValue(String value) {
-        String content = value == null ? "" : value;
-        if (content.length() > FIELD_WIDTH) {
-            content = content.substring(0, FIELD_WIDTH - 1) + "…";
-        }
-        return String.format("%-" + FIELD_WIDTH + "s", content);
     }
 
     private static String safe(String value) {

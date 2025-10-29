@@ -9,3 +9,4 @@ app/src/main/java/a3/data/
 
 # Ignore compiled binaries
 bin/
+.idea/workspace.xml
