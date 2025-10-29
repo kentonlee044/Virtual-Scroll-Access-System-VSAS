@@ -6,6 +6,7 @@ public class Scroll {
     private int numberOfDownloads;
     private String categorizationId;
     private String ownerId;  // ID of the user who owns this scroll
+    private String uploadDate; // ISO 8601 string of when the scroll was uploaded
 
     public Scroll(String filename, String ownerId) {
         this(filename, 0, 0, "", ownerId);
@@ -25,6 +26,7 @@ public class Scroll {
         this.numberOfDownloads = numberOfDownloads;
         this.categorizationId = categorizationId;
         this.ownerId = ownerId;
+        this.uploadDate = ""; // default empty if not set
     }
 
     // Getters
@@ -46,6 +48,14 @@ public class Scroll {
     
     public void setCategorizationId(String categorizationId) {
         this.categorizationId = categorizationId;
+    }
+
+    public String getUploadDate() {
+        return uploadDate;
+    }
+    
+    public void setUploadDate(String uploadDate) {
+        this.uploadDate = uploadDate;
     }
 
     // Setters

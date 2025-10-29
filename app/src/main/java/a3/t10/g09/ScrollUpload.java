@@ -1,5 +1,6 @@
 package a3.t10.g09;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
@@ -9,6 +10,8 @@ import a3.t10.g09.Validator.ScrollFilenameValidator;
 import a3.t10.g09.Validator.Validator;
 
 import java.io.File;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class ScrollUpload {
     private final Scanner scanner;
@@ -110,23 +113,31 @@ public class ScrollUpload {
                     continue;
                 }
                 // If filename already exists, increment and normalize uploads for all matching scrolls
-                ScrollList matches = existingScrolls.getScrolls(candidate);
-                if (matches != null) {
+                List<Scroll> matches = new ArrayList<Scroll>();
+                
+                for(Scroll scroll : existingScrolls.getAllScrolls()){
+                    if(scroll.getFilename().equals(candidate)){
+                        matches.add(scroll);
+                    }
+                }
+                if (matches != null && !matches.isEmpty()) {
                     int currentMax = 0;
-                    for (Scroll s : matches.getAllScrolls()) {
+                    for (Scroll s : matches) {
                         if (s.getNumberOfUploads() > currentMax) {
                             currentMax = s.getNumberOfUploads();
                         }
                     }
                     int targetUploads = currentMax + 1;
-                    for (Scroll s : matches.getAllScrolls()) {
-                        // Normalize to the same upload count
+                    for (Scroll s : matches) {
+                        // Normalize to the same upload count for all matching scrolls
                         s.resetUploads();
                         for (int i = 0; i < targetUploads; i++) {
                             s.incrementUploads();
                         }
                     }
-                    ScrollJSONHandler.saveToJson(matches);
+                    // Persist updates on the existing scroll list and exit the upload flow
+                    ScrollJSONHandler.saveToJson(existingScrolls);
+
                 }
                 filename = candidate;
                 break;
@@ -170,6 +181,9 @@ public class ScrollUpload {
 
         // Create and save the scroll
         Scroll newScroll = new Scroll(filename, categorizationId, ownerId);
+        // Set upload date in ISO 8601 format
+        String nowIso = ZonedDateTime.now().format(DateTimeFormatter.ISO_OFFSET_DATE_TIME);
+        newScroll.setUploadDate(nowIso);
         Scroll scroll_same_filename = existingScrolls.getScroll(filename);
         //set # of uploads to the same as any scroll with the same filename
         if(scroll_same_filename != null){

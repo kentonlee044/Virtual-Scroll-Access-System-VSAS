@@ -1,23 +1,26 @@
 [
   {
-    "filename": "hello.txt",
-    "numberOfUploads": 0,
+    "filename": "hello.pdf",
+    "numberOfUploads": 3,
     "numberOfDownloads": 0,
-    "categorizationId": "fantastic",
-    "ownerId": "jlopjlop"
+    "categorizationId": "hello",
+    "ownerId": "juanlopez",
+    "uploadDate": "2025-10-29T18:44:31.371562+11:00"
   },
   {
-    "filename": "hellohello.txt",
-    "numberOfUploads": 0,
+    "filename": "hello.pdf",
+    "numberOfUploads": 3,
     "numberOfDownloads": 0,
-    "categorizationId": "",
-    "ownerId": "jlopjlop"
+    "categorizationId": "hklsdjkasjkd",
+    "ownerId": "juanlopez",
+    "uploadDate": "2025-10-29T18:51:15.41619+11:00"
   },
   {
-    "filename": "captainahab.txt",
-    "numberOfUploads": 0,
+    "filename": "helloworld.txt",
+    "numberOfUploads": 1,
     "numberOfDownloads": 0,
-    "categorizationId": "non-fiction",
-    "ownerId": "khof0998"
+    "categorizationId": "ajhbsdbjkhsa",
+    "ownerId": "juanlopez",
+    "uploadDate": "2025-10-29T18:51:35.042912+11:00"
   }
 ]
