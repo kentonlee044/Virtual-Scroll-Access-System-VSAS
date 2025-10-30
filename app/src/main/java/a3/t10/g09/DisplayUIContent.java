@@ -1,7 +1,7 @@
 package a3.t10.g09;
 
 public final class DisplayUIContent {
-    static final int MIN_MAIN_MENU_SCROLL_OPERATION_BOX_WIDTH = 20; // default = 53
+    static final int MIN_MAIN_MENU_SCROLL_OPERATION_BOX_WIDTH = 53;
     private static final int SCROLL_OPERATION_BOX_WIDTH = 70;
     private static final int LABEL_WIDTH = 16;
     private static final int FIELD_WIDTH = 42;
@@ -40,7 +40,7 @@ public final class DisplayUIContent {
         // print the title box
         System.out.println("┌──" + "─".repeat(longest) + "┐");
         System.out.println("│  " + " " + title.getTitle() +
-                " ".repeat(longest - title.getTitle().length()) + "│");
+                " ".repeat(longest - title.getTitle().length() - 1) + "│");
         System.out.println("├──" + "─".repeat(longest) + "┤");
         // print the user's login status
         System.out.println("│  " + clientStatusMessage +
