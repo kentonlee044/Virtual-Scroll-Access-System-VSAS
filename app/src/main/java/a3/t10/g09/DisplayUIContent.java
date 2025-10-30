@@ -1,7 +1,7 @@
 package a3.t10.g09;
 
 public final class DisplayUIContent {
-    static final int MIN_MAIN_MENU_SCROLL_OPERATION_BOX_WIDTH = 53;
+    static final int MIN_MAIN_MENU_SCROLL_OPERATION_BOX_WIDTH = 20; // default = 53
     private static final int SCROLL_OPERATION_BOX_WIDTH = 70;
     private static final int LABEL_WIDTH = 16;
     private static final int FIELD_WIDTH = 42;
@@ -13,7 +13,26 @@ public final class DisplayUIContent {
 
 
     public static void printMainMenu(Command[] commands, MenuTitle title, Client client) {
-        int longest = findLongestLine(commands, title);
+        String clientStatusMessage;
+        switch (client.getStatus()) {
+            case ClientStatus.ANONYMOUS:
+                // print "You are logged in as a guest"
+                clientStatusMessage = "You are logged in as a guest";
+                break;
+            case ClientStatus.GENERIC_USER:
+                // print "You are logged in as the generic user '<user id>'
+                clientStatusMessage = "You are logged in as a generic user with the IDkey: " + client.getCurrentUser().getIdkey();
+                break;
+            case ClientStatus.ADMIN:
+                // print "You are logged in as the administrator '<user id>."
+                clientStatusMessage = "You are logged in as an administrator with the IDkey: " + client.getCurrentUser().getIdkey();
+                break;
+            default:
+                clientStatusMessage = "Your login status could not be determined";
+                break;
+        }
+
+        int longest = findLongestLine(commands, title, clientStatusMessage);
 
         if (longest < MIN_MAIN_MENU_SCROLL_OPERATION_BOX_WIDTH) {
             longest = MIN_MAIN_MENU_SCROLL_OPERATION_BOX_WIDTH;
@@ -21,23 +40,16 @@ public final class DisplayUIContent {
         // print the title box
         System.out.println("┌──" + "─".repeat(longest) + "┐");
         System.out.println("│  " + " " + title.getTitle() +
-                " ".repeat(longest - title.getTitle().length() - 1) + "|");
-        System.out.println("├──" + "─".repeat(longest + 1) + "┤");
-        // print the user and their status
-        switch (client.getStatus()) {
-            case ClientStatus.ANONYMOUS:
-                // print "You are logged in as a guest"
-                break;
-            case ClientStatus.GENERIC_USER:
-                // print "You are logged in as the generic user '<user id>'
-            case ClientStatus.ADMIN:
-                // print "You are logged in as the administrator '<user id>."
-        }
-
+                " ".repeat(longest - title.getTitle().length()) + "│");
+        System.out.println("├──" + "─".repeat(longest) + "┤");
+        // print the user's login status
+        System.out.println("│  " + clientStatusMessage +
+                " ".repeat(longest - clientStatusMessage.length()) + "│");
+        System.out.println("├──" + "─".repeat(longest) + "┤");
         // print each row of available commands
         for (int i = 0; i < commands.length; i++) {
             System.out.println("│  " + (i+1) + ") " + commands[i].getDescription() +
-                    " ".repeat(longest - commands[i].getDescription().length() - 3) + "│");
+                    " ".repeat(longest - commands[i].getDescription().length() - 2 - String.valueOf(Math.abs(i+1)).length()) + "│");
         }
 
         // print bottom edge of the box
@@ -45,7 +57,7 @@ public final class DisplayUIContent {
         System.out.print("Select an option (1-" + commands.length + "): ");
     }
 
-    private static int findLongestLine(Command[] commands, MenuTitle title) {
+    private static int findLongestLine(Command[] commands, MenuTitle title, String clientStatusMessage) {
         int longest = title.getTitle().length() + 1; // there is one whitespace before the title
         for (int i = 0; i < commands.length; i++) {
             int curr = commands[i].getDescription().length() + 3; // there is "i) " before each command
@@ -53,7 +65,10 @@ public final class DisplayUIContent {
                 longest = curr;
             }
         }
-        return longest;
+        if (clientStatusMessage.length() > longest) {
+            longest = clientStatusMessage.length();
+        }
+        return longest + 1; // '+ 1' for minimum 1 space padding on the right
     }
 
     public static void printBorder(char left, char fill, char right) {
