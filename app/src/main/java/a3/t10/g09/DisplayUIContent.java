@@ -46,20 +46,6 @@ public final class DisplayUIContent {
         System.out.println("│  " + clientStatusMessage +
                 " ".repeat(longest - clientStatusMessage.length()) + "│");
         System.out.println("├──" + "─".repeat(longest) + "┤");
-        int longest = findLongestLine(commands, title, clientStatusMessage);
-
-        if (longest < MIN_MAIN_MENU_SCROLL_OPERATION_BOX_WIDTH) {
-            longest = MIN_MAIN_MENU_SCROLL_OPERATION_BOX_WIDTH;
-        }
-        // print the title box
-        System.out.println("┌──" + "─".repeat(longest) + "┐");
-        System.out.println("│  " + " " + title.getTitle() +
-                " ".repeat(longest - title.getTitle().length()) + "│");
-        System.out.println("├──" + "─".repeat(longest) + "┤");
-        // print the user's login status
-        System.out.println("│  " + clientStatusMessage +
-                " ".repeat(longest - clientStatusMessage.length()) + "│");
-        System.out.println("├──" + "─".repeat(longest) + "┤");
         // print each row of available commands
         for (int i = 0; i < commands.length; i++) {
             System.out.println("│  " + (i+1) + ") " + commands[i].getDescription() +
