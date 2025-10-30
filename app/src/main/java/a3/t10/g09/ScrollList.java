@@ -18,7 +18,7 @@ public class ScrollList {
     // Get a scroll by filename
     public Scroll getScroll(String filename) {
         for (Scroll scroll : scrolls) {
-            if (scroll.getFilename().equals(filename)) {
+            if (scroll.getFilename().equalsIgnoreCase(filename)) { // Use equalsIgnoreCase
                 return scroll;
             }
         }
@@ -37,7 +37,7 @@ public class ScrollList {
     }
 
     // Upload a new binary file to replace a scroll
-    public boolean replaceExistingScroll(String oldFileName,String newFileName, String ownerID) {
+    public boolean replaceExistingScroll(String oldFileName, String newFileName, String ownerID) {
         for (Scroll scroll : scrolls) {
             if (scroll.getFilename().equals(oldFileName)) {
                 scroll.setFilename(newFileName);
@@ -53,7 +53,7 @@ public class ScrollList {
     public List<Scroll> getAllScrolls() {
         return new ArrayList<>(scrolls); // Return a copy to preserve encapsulation
     }
-    
+
     // Get scrolls owned by a specific user
     public List<Scroll> getScrollsByOwner(String ownerId) {
         List<Scroll> ownedScrolls = new ArrayList<>();
@@ -78,15 +78,15 @@ public class ScrollList {
     // Get the total number of downloads across all scrolls
     public int getTotalDownloads() {
         return scrolls.stream()
-                     .mapToInt(Scroll::getNumberOfDownloads)
-                     .sum();
+                .mapToInt(Scroll::getNumberOfDownloads)
+                .sum();
     }
 
     // Get the total number of uploads across all scrolls
     public int getTotalUploads() {
         return scrolls.stream()
-                     .mapToInt(Scroll::getNumberOfUploads)
-                     .sum();
+                .mapToInt(Scroll::getNumberOfUploads)
+                .sum();
     }
 
     // Get a list of scrolls with at least a certain number of downloads
