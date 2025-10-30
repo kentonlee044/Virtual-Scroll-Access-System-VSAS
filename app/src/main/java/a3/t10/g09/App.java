@@ -78,14 +78,10 @@ public class App {
             }
             if (choice > commands.length || choice < 1) {
                 System.out.println("Invalid input. Please choose a number between 1 and " + commands.length + ".\n");
+                continue;
             }
             commands[(choice - 1)].execute(scanner, app.client);
 //            System.out.println("DEBUG: Command executed");
         }
-    }
-        public void run() {
-            while (true) {
-
-            }
     }
 }

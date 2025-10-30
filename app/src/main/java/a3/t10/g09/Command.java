@@ -34,7 +34,7 @@ public enum Command {
             new RegisterCli(scanner).run();
         }
     },
-    VIEW_SCROLLS(EnumSet.allOf(ClientStatus.class), "View the scrolls in the database.") {
+    VIEW_SCROLLS(EnumSet.allOf(ClientStatus.class), "View the scrolls in the database") {
         @Override
         public void execute(Scanner scanner, Client client) {
             new AdminSystemAnalytics().displayAllScrolls();

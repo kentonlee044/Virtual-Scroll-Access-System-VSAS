@@ -19,7 +19,8 @@ public class AdminUserManagement {
     public void run(User currentUser) {
         boolean managing = true;
         while (managing) {
-            System.out.println("\n┌──────── User Management ────────┐");
+            System.out.println();
+            System.out.println("┌──────── User Management ─────────┐");
             System.out.println("│ 1) View users                    │");
             System.out.println("│ 2) Add user                      │");
             System.out.println("│ 3) Delete user                   │");
@@ -43,15 +44,37 @@ public class AdminUserManagement {
 
     private void listUsers() {
         UserList list = userLogin.getUserData();
-        System.out.println("\n┌──────── All Users ──────────────┐");
         if (list.getUsers().isEmpty()) {
+            System.out.println("\n┌──────── All Users ──────────────┐");
             System.out.println("│ No users found.                  │");
-        } else {
-            for (User u : list.getUsers()) {
-                System.out.printf("│ idkey=%s | name=%s | email=%s | phone=%s | role=%s%n",
-                        safe(u.getIdkey()), safe(u.getFullname()), safe(u.getEmail()),
-                        safe(u.getPhone()), safe(u.getRole()));
+            System.out.println("└──────────────────────────────────┘");
+            return;
+        }
+        // get data and format into a matrix
+        String[][] data = new String[list.getUsers().size()][5];
+        for (int i = 0; i < list.getUsers().size(); i++) {
+            User userIterator = list.getUsers().get(i);
+            data[i][0] = safe(userIterator.getIdkey());
+            data[i][1] = safe(userIterator.getFullname());
+            data[i][2] = safe(userIterator.getEmail());
+            data[i][3] = safe(userIterator.getPhone());
+            data[i][4] = safe(userIterator.getRole());
+        }
+        // get max column widths
+        int[] colWidths = new int[5];
+        for (String[] row : data) {
+            for (int i = 0; i < row.length; i++) {
+                colWidths[i] = Math.max(colWidths[i], row[i].length());
             }
+        }
+        int maxLineLength = 0;
+        for (int i : colWidths) {
+            maxLineLength += 1;
+        }
+        System.out.println("\n┌──────── All Users ──────────────┐");
+        for (String[] row : data) {
+            System.out.printf("│ idkey=%s | name=%s | email=%s | phone=%s | role=%s%n",
+                    row[0], row[1], row[2], row[3], row[4]);
         }
         System.out.println("└──────────────────────────────────┘");
     }
@@ -150,7 +173,7 @@ public class AdminUserManagement {
         return s == null || s.isBlank();
     }
 
-    private String safe(String s) {
+    private static String safe(String s) {
         return s == null ? "" : s;
     }
 }
