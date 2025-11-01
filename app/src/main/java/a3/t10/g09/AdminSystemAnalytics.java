@@ -204,7 +204,20 @@ public class AdminSystemAnalytics {
                     }
                 }
                 scanner.nextLine();
-            } else{
+            } else if(token.equalsIgnoreCase("download")){
+                System.out.println("Enter scroll name to download: ");
+                String scrollToDownload = scanner.nextLine().trim();
+                Scroll scroll = scrollList.getScroll(scrollToDownload);
+                if (scroll != null) {
+                    scroll.download();
+                    // Persist incremented download count to JSON
+                    if (!ScrollJSONHandler.saveToJson(scrollList)) {
+                        System.out.println("Warning: Download count increment could not be saved.");
+                    }
+                } else {
+                    System.out.println("Scroll not found.");
+                }
+            }else{
                 System.out.println("Please enter a valid command.");
                 scanner.nextLine();
             }

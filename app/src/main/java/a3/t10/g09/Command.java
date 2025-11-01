@@ -96,22 +96,6 @@ public enum Command {
             new ScrollRemove(scanner, client.getCurrentUser()).run();
         }
     },
-    DOWNLOAD_SCROLL(EnumSet.of(ClientStatus.GENERIC_USER, ClientStatus.ADMIN), "Download a scroll") {
-
-        @Override
-        public void execute(Scanner scanner, Client client) {
-            ScrollList scrollList = ScrollJSONHandler.loadFromJson();
-            System.out.println("Enter the filename of the scroll to download:");
-            String filename = scanner.nextLine();
-
-            Scroll scroll = scrollList.getScroll(filename);
-            if (scroll != null) {
-                scroll.download();
-            } else {
-                System.out.println("Scroll not found.");
-            }
-        }
-    },
     EXIT(EnumSet.allOf(ClientStatus.class), "Exit") {
         @Override
         public void execute(Scanner scanner, Client client) {

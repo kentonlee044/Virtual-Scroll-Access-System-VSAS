@@ -15,31 +15,31 @@ public class ScrollList {
         scrolls.add(scroll);
     }
 
-    // Get a scroll by filename
+    // Get a scroll by filename (only active)
     public Scroll getScroll(String filename) {
         for (Scroll scroll : scrolls) {
-            if (scroll.getFilename().equalsIgnoreCase(filename)) { // Use equalsIgnoreCase
+            if (!scroll.isDeleted() && scroll.getFilename().equalsIgnoreCase(filename)) { // Use equalsIgnoreCase
                 return scroll;
             }
         }
         return null;
     }
 
-    // Get all scrolls by filename
+    // Get all scrolls by filename (only active)
     public ScrollList getScrolls(String filename) {
         ScrollList matches = new ScrollList();
         for (Scroll scroll : scrolls) {
-            if (scroll.getFilename().equals(filename)) {
+            if (!scroll.isDeleted() && scroll.getFilename().equals(filename)) {
                 matches.addScroll(scroll);
             }
         }
         return matches;
     }
 
-    // Upload a new binary file to replace a scroll
+    // Upload a new binary file to replace a scroll (only if target is active)
     public boolean replaceExistingScroll(String oldFileName, String newFileName, String ownerID) {
         for (Scroll scroll : scrolls) {
-            if (scroll.getFilename().equals(oldFileName)) {
+            if (!scroll.isDeleted() && scroll.getFilename().equals(oldFileName)) {
                 scroll.setFilename(newFileName);
                 scroll.resetDownloads();
                 scroll.resetUploads();
@@ -49,51 +49,76 @@ public class ScrollList {
         return false;
     }
 
-    // Get all scrolls
+    // Get all active scrolls
     public List<Scroll> getAllScrolls() {
-        return new ArrayList<>(scrolls); // Return a copy to preserve encapsulation
+        List<Scroll> active = new ArrayList<>();
+        for (Scroll s : scrolls) {
+            if (!s.isDeleted()) {
+                active.add(s);
+            }
+        }
+        return active; // Return active copy to preserve encapsulation
+    }
+
+    // Get all scrolls including deleted (for persistence/internal logic)
+    public List<Scroll> getAllScrollsIncludingDeleted() {
+        return new ArrayList<>(scrolls);
     }
 
     // Get scrolls owned by a specific user
     public List<Scroll> getScrollsByOwner(String ownerId) {
         List<Scroll> ownedScrolls = new ArrayList<>();
         for (Scroll scroll : scrolls) {
-            if (scroll.isOwnedBy(ownerId)) {
+            if (!scroll.isDeleted() && scroll.isOwnedBy(ownerId)) {
                 ownedScrolls.add(scroll);
             }
         }
         return ownedScrolls;
     }
 
-    // Remove a scroll by filename
+    // Soft-remove a scroll by filename (mark deleted)
     public boolean removeScroll(String filename) {
-        return scrolls.removeIf(scroll -> scroll.getFilename().equals(filename));
+        for (Scroll scroll : scrolls) {
+            if (!scroll.isDeleted() && scroll.getFilename().equals(filename)) {
+                scroll.setDeleted(true);
+                return true;
+            }
+        }
+        return false;
     }
 
-    // Get the number of scrolls in the list
+    // Get the number of active scrolls in the list
     public int getScrollCount() {
-        return scrolls.size();
+        int count = 0;
+        for (Scroll s : scrolls) {
+            if (!s.isDeleted()) count++;
+        }
+        return count;
     }
 
-    // Get the total number of downloads across all scrolls
+    // Get the total number of downloads across all active scrolls
     public int getTotalDownloads() {
-        return scrolls.stream()
-                .mapToInt(Scroll::getNumberOfDownloads)
-                .sum();
+        int sum = 0;
+        for (Scroll s : scrolls) {
+            if (!s.isDeleted()) sum += s.getNumberOfDownloads();
+        }
+        return sum;
     }
 
-    // Get the total number of uploads across all scrolls
+    // Get the total number of uploads across all active scrolls
     public int getTotalUploads() {
-        return scrolls.stream()
-                .mapToInt(Scroll::getNumberOfUploads)
-                .sum();
+        int sum = 0;
+        for (Scroll s : scrolls) {
+            if (!s.isDeleted()) sum += s.getNumberOfUploads();
+        }
+        return sum;
     }
 
-    // Get a list of scrolls with at least a certain number of downloads
+    // Get a list of active scrolls with at least a certain number of downloads
     public List<Scroll> getPopularScrolls(int minDownloads) {
         List<Scroll> popularScrolls = new ArrayList<>();
         for (Scroll scroll : scrolls) {
-            if (scroll.getNumberOfDownloads() >= minDownloads) {
+            if (!scroll.isDeleted() && scroll.getNumberOfDownloads() >= minDownloads) {
                 popularScrolls.add(scroll);
             }
         }
