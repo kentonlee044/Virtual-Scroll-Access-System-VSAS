@@ -134,6 +134,7 @@ public class Scroll {
             // Copy the file to the downloads directory
             Files.copy(sourcePath, targetPath);
             System.out.println("File downloaded to: " + targetPath);
+            this.incrementDownloads();
 
         } catch (IOException e) {
             System.err.println("Failed to download file: " + e.getMessage());
