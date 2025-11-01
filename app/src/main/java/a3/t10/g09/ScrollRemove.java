@@ -32,9 +32,9 @@ public class ScrollRemove {
         ScrollList scrollList = ScrollJSONHandler.loadFromJson();
         List<Scroll> ownedScrolls;
         if (currentUser.getRole().equals("admin")) {
-            ownedScrolls = scrollList.getAllScrolls();
+            ownedScrolls = scrollList.getAllScrolls(); // active only
         } else {
-            ownedScrolls = scrollList.getScrollsByOwner(currentUser.getIdkey());
+            ownedScrolls = scrollList.getScrollsByOwner(currentUser.getIdkey()); // active only
         }
         if (ownedScrolls.isEmpty()) {
             renderMessage("You have no scrolls to remove.", "Press Enter to return");
@@ -52,14 +52,13 @@ public class ScrollRemove {
             return;
         }
         Path target = STORAGE_DIR.resolve(selected.getFilename());
+        // Soft delete: mark as deleted; do not change counters here
         scrollList.removeScroll(selected.getFilename());
-        selected.incrementUploads();
-//
         if (ScrollJSONHandler.saveToJson(scrollList)) {
-            renderConfirmation("✓ Scroll binary removed successfully!", selected.getFilename(),
+            renderConfirmation("✓ Scroll removed (soft-deleted) successfully!", selected.getFilename(),
                     target.toAbsolutePath().toString());
         } else {
-            renderConfirmation("✗ Binary removed, but metadata failed to save.", selected.getFilename(),
+            renderConfirmation("✗ Removal flagged, but metadata failed to save.", selected.getFilename(),
                     target.toAbsolutePath().toString());
         }
         waitForEnter();

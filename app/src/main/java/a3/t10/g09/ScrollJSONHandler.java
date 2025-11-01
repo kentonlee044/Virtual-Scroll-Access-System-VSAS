@@ -45,7 +45,8 @@ public class ScrollJSONHandler {
 
     public static boolean saveToJson(ScrollList scrollList) {
         try (FileWriter writer = new FileWriter(DEFAULT_SCROLLS_PATH)) {
-            gson.toJson(scrollList.getAllScrolls(), writer);
+            // Persist all records including soft-deleted ones
+            gson.toJson(scrollList.getAllScrollsIncludingDeleted(), writer);
             return true;
         } catch (IOException e) {
             e.printStackTrace();
@@ -54,30 +55,21 @@ public class ScrollJSONHandler {
     }
 
     public static String previewScroll(String scrollName){
-        try(JsonReader reader = new JsonReader(new FileReader("src/main/java/a3/t10/g09/data/scrolls.json"))){
-
-            List<Scroll> scrolls = gson.fromJson(reader, new com.google.gson.reflect.TypeToken<List<Scroll>>(){}.getType());
-            
-            for(Scroll scroll : scrolls){
-                if(scroll.getFilename().equals(scrollName)){
-                    Path path = Path.of(scrollName).toAbsolutePath().normalize();
-
-                    try{
-                        String content = Files.readString(path);
-                        return content;
-
-                    } catch(IOException e){
-                        System.out.println("Could not read the scroll file at: " + path);
-                        return null;
-                    }
+        // Respect soft-deletion by using the loader and active list
+        ScrollList list = loadFromJson();
+        for (Scroll scroll : list.getAllScrolls()) {
+            if (scroll.getFilename() != null && scroll.getFilename().equals(scrollName)) {
+                Path path = Path.of(scrollName).toAbsolutePath().normalize();
+                try{
+                    String content = Files.readString(path);
+                    return content;
+                } catch(IOException e){
+                    System.out.println("Could not read the scroll file at: " + path);
+                    return null;
                 }
             }
-
-            System.out.println("Scroll with the name " + scrollName + " not found.");
-        } catch (IOException e) {
-            System.out.println("An error occurred while reading the scrolls file.");
-            return null;
         }
+        System.out.println("Scroll with the name " + scrollName + " not found.");
         return null;
     }
 }

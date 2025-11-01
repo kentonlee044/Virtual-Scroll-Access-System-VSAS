@@ -1,6 +1,5 @@
 package a3.t10.g09;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
@@ -8,6 +7,7 @@ import a3.t10.g09.Validator.ScrollCategorizationIdUniqueValidator;
 import a3.t10.g09.Validator.ScrollCategorizationIdValidator;
 import a3.t10.g09.Validator.ScrollFilenameValidator;
 import a3.t10.g09.Validator.Validator;
+import a3.t10.g09.Validator.ScrollFilenameUniqueValidator;
 
 import java.io.File;
 import java.time.ZonedDateTime;
@@ -96,6 +96,7 @@ public class ScrollUpload {
         String candidate = filename;
         // Load existing scrolls once for validations (filename uniqueness and categorization ID uniqueness)
         ScrollList existingScrolls = ScrollJSONHandler.loadFromJson();
+        ScrollFilenameUniqueValidator uniqueFilenameValidator = new ScrollFilenameUniqueValidator(existingScrolls);
         while (true) {
             renderFormUpload(status, INPUT_HINT, candidate, categorizationId);
             System.out.print("> ");
@@ -112,32 +113,11 @@ public class ScrollUpload {
                     status = "File not found at path: " + candidate;
                     continue;
                 }
-                // If filename already exists, increment and normalize uploads for all matching scrolls
-                List<Scroll> matches = new ArrayList<Scroll>();
-                
-                for(Scroll scroll : existingScrolls.getAllScrolls()){
-                    if(scroll.getFilename().equals(candidate)){
-                        matches.add(scroll);
-                    }
-                }
-                if (matches != null && !matches.isEmpty()) {
-                    int currentMax = 0;
-                    for (Scroll s : matches) {
-                        if (s.getNumberOfUploads() > currentMax) {
-                            currentMax = s.getNumberOfUploads();
-                        }
-                    }
-                    int targetUploads = currentMax + 1;
-                    for (Scroll s : matches) {
-                        // Normalize to the same upload count for all matching scrolls
-                        s.resetUploads();
-                        for (int i = 0; i < targetUploads; i++) {
-                            s.incrementUploads();
-                        }
-                    }
-                    // Persist updates on the existing scroll list and exit the upload flow
-                    ScrollJSONHandler.saveToJson(existingScrolls);
-
+                // Enforce uniqueness among active scrolls
+                String uniqueError = uniqueFilenameValidator.validate(candidate);
+                if (uniqueError != null) {
+                    status = uniqueError;
+                    continue;
                 }
                 filename = candidate;
                 break;
@@ -184,13 +164,17 @@ public class ScrollUpload {
         // Set upload date in ISO 8601 format
         String nowIso = ZonedDateTime.now().format(DateTimeFormatter.ISO_OFFSET_DATE_TIME);
         newScroll.setUploadDate(nowIso);
-        Scroll scroll_same_filename = existingScrolls.getScroll(filename);
-        //set # of uploads to the same as any scroll with the same filename
-        if(scroll_same_filename != null){
-            for(int i=0; i<scroll_same_filename.getNumberOfUploads(); i++){
-                newScroll.incrementUploads();
+        // Determine numberOfUploads: 1 + max among all historical scrolls (including deleted) with same filename
+        int maxUploads = 0;
+        for (Scroll s : existingScrolls.getAllScrollsIncludingDeleted()) {
+            if (s.getFilename() != null && s.getFilename().equals(filename)) {
+                if (s.getNumberOfUploads() > maxUploads) {
+                    maxUploads = s.getNumberOfUploads();
+                }
             }
-        }else{
+        }
+        int targetUploads = (maxUploads > 0 ? maxUploads + 1 : 1);
+        for (int i = 0; i < targetUploads; i++) {
             newScroll.incrementUploads();
         }
         ScrollList scrolls = ScrollJSONHandler.loadFromJson();

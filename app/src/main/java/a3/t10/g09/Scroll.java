@@ -11,6 +11,7 @@ public class Scroll {
     private String categorizationId;
     private String ownerId; // ID of the user who owns this scroll
     private String uploadDate; // ISO 8601 string of when the scroll was uploaded
+    private boolean deleted; // soft-delete flag
 
     public Scroll(String filename, String ownerId) {
         this(filename, 0, 0, "", ownerId);
@@ -32,6 +33,7 @@ public class Scroll {
         this.categorizationId = categorizationId;
         this.ownerId = ownerId;
         this.uploadDate = ""; // default empty if not set
+        this.deleted = false; // default active
     }
 
     // Getters
@@ -61,6 +63,14 @@ public class Scroll {
 
     public void setUploadDate(String uploadDate) {
         this.uploadDate = uploadDate;
+    }
+
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
     }
 
     // Setters
