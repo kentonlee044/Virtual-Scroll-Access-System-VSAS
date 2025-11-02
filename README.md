@@ -16,17 +16,6 @@
 
 ---
 
-## Features (Sprint 3)
-
-- View all scrolls (list + details)
-- Search/filters (name, uploader, date, category)
-- Preview scrolls
-- Download scrolls
-- Metrics (download count; upload count initialised at 1 per unique scroll)
-- Auth hardening (password masking where supported; forgot-password flow)
-
----
-
 ## Prerequisites
 
 - Git
