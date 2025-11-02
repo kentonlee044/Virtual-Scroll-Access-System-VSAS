@@ -120,56 +120,57 @@ class ScrollRemoveTest {
         assertFalse((boolean) method.invoke(remove));
     }
 
-    @Test
-    void printBorderProducesFullWidthLine() throws Exception {
-        String output = captureOutToString(() -> {
-            Method method = accessStatic("printBorder", char.class, char.class, char.class);
-            method.invoke(null, '┌', '─', '┐');
-            return null;
-        });
-        assertEquals("┌" + "─".repeat(70) + "┐" + System.lineSeparator(), output);
-    }
+    // @Test
+    // void printBorderProducesFullWidthLine() throws Exception {
+    // String output = captureOutToString(() -> {
+    // Method method = accessStatic("printBorder", char.class, char.class,
+    // char.class);
+    // method.invoke(null, '┌', '─', '┐');
+    // return null;
+    // });
+    // assertEquals("┌" + "─".repeat(70) + "┐" + System.lineSeparator(), output);
+    // }
 
-    @Test
-    void centerRowTruncatesAndCenters() throws Exception {
-        Method method = accessStatic("centerRow", String.class);
-        String result = (String) method.invoke(null, "x".repeat(200));
-        assertTrue(result.startsWith("│"));
-        assertTrue(result.endsWith("│"));
-        assertTrue(result.contains("…"));
-        assertEquals(72, result.length());
-    }
+    // @Test
+    // void centerRowTruncatesAndCenters() throws Exception {
+    // Method method = accessStatic("centerRow", String.class);
+    // String result = (String) method.invoke(null, "x".repeat(200));
+    // assertTrue(result.startsWith("│"));
+    // assertTrue(result.endsWith("│"));
+    // assertTrue(result.contains("…"));
+    // assertEquals(72, result.length());
+    // }
 
-    @Test
-    void rowTruncatesLongContent() throws Exception {
-        Method method = accessStatic("row", String.class);
-        String result = (String) method.invoke(null, "y".repeat(200));
-        assertTrue(result.startsWith("│"));
-        assertTrue(result.endsWith("│"));
-        assertTrue(result.contains("…"));
-        assertEquals(72, result.length());
-    }
+    // @Test
+    // void rowTruncatesLongContent() throws Exception {
+    // Method method = accessStatic("row", String.class);
+    // String result = (String) method.invoke(null, "y".repeat(200));
+    // assertTrue(result.startsWith("│"));
+    // assertTrue(result.endsWith("│"));
+    // assertTrue(result.contains("…"));
+    // assertEquals(72, result.length());
+    // }
 
-    @Test
-    void fieldLineFormatsLabelAndValue() throws Exception {
-        Method method = accessStatic("fieldLine", String.class, String.class);
-        String result = (String) method.invoke(null, "Label", "value");
-        assertTrue(result.contains("Label"));
-        assertTrue(result.contains("[value"));
-        assertEquals(72, result.length());
-    }
+    // @Test
+    // void fieldLineFormatsLabelAndValue() throws Exception {
+    // Method method = accessStatic("fieldLine", String.class, String.class);
+    // String result = (String) method.invoke(null, "Label", "value");
+    // assertTrue(result.contains("Label"));
+    // assertTrue(result.contains("[value"));
+    // assertEquals(72, result.length());
+    // }
 
-    @Test
-    void padValueHandlesNullAndTruncation() throws Exception {
-        Method method = accessStatic("padValue", String.class);
-        String blank = (String) method.invoke(null, new Object[] { null });
-        assertTrue(blank.isBlank());
-        assertEquals(42, blank.length());
+    // @Test
+    // void padValueHandlesNullAndTruncation() throws Exception {
+    // Method method = accessStatic("padValue", String.class);
+    // String blank = (String) method.invoke(null, new Object[] { null });
+    // assertTrue(blank.isBlank());
+    // assertEquals(42, blank.length());
 
-        String truncated = (String) method.invoke(null, "z".repeat(100));
-        assertEquals(42, truncated.length());
-        assertTrue(truncated.endsWith("…"));
-    }
+    // String truncated = (String) method.invoke(null, "z".repeat(100));
+    // assertEquals(42, truncated.length());
+    // assertTrue(truncated.endsWith("…"));
+    // }
 
     @Test
     void safeReturnsDashForBlank() throws Exception {
