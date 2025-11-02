@@ -54,7 +54,7 @@ $ gradle test
 ```
 Generate code coverage report with:
 ```
-gradle jacocoTestReport
+$ gradle jacocoTestReport
 ```
 Report can be found at build/reports/jacoco/index.html
 
