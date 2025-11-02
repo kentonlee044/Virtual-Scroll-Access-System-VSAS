@@ -63,7 +63,7 @@ class ProfileUpdateUIFlowTest {
         // Enter to return
         String input = String.join("\n",
                 "oldPass", // current
-                "", // new (empty) -> error, loop
+                "",
                 "New!Pass1", // new
                 "no-match", // confirm mismatch -> loop
                 "New!Pass1", // new again
