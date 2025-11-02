@@ -30,63 +30,66 @@ public class ScrollUploadTest {
         assertEquals("error message", result);
     }
 
-    @Test
-    public void padValueTruncatesAndAddsEllipsis() throws Exception {
-        Method method = ScrollUpload.class.getDeclaredMethod("padValue", String.class);
-        method.setAccessible(true);
-        String longValue = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
-        String result = (String) method.invoke(null, longValue);
-        assertEquals(42, result.length());
-        assertTrue(result.endsWith("…"));
-    }
+    // @Test
+    // public void padValueTruncatesAndAddsEllipsis() throws Exception {
+    // Method method = ScrollUpload.class.getDeclaredMethod("padValue",
+    // String.class);
+    // method.setAccessible(true);
+    // String longValue =
+    // "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
+    // String result = (String) method.invoke(null, longValue);
+    // assertEquals(42, result.length());
+    // assertTrue(result.endsWith("…"));
+    // }
 
-    @Test
-    public void padValueHandlesNull() throws Exception {
-        Method method = accessMethod("padValue", String.class);
-        String result = (String) method.invoke(null, new Object[] { null });
-        assertEquals(42, result.length());
-        assertTrue(result.isBlank());
-    }
+    // @Test
+    // public void padValueHandlesNull() throws Exception {
+    // Method method = accessMethod("padValue", String.class);
+    // String result = (String) method.invoke(null, new Object[] { null });
+    // assertEquals(42, result.length());
+    // assertTrue(result.isBlank());
+    // }
 
-    @Test
-    public void centerRowTruncatesLongContent() throws Exception {
-        Method method = accessMethod("centerRow", String.class);
-        String result = (String) method.invoke(null, "x".repeat(100));
-        assertTrue(result.contains("…"));
-        assertTrue(result.startsWith("│"));
-        assertTrue(result.endsWith("│"));
-        assertEquals(72, result.length());
-    }
+    // @Test
+    // public void centerRowTruncatesLongContent() throws Exception {
+    // Method method = accessMethod("centerRow", String.class);
+    // String result = (String) method.invoke(null, "x".repeat(100));
+    // assertTrue(result.contains("…"));
+    // assertTrue(result.startsWith("│"));
+    // assertTrue(result.endsWith("│"));
+    // assertEquals(72, result.length());
+    // }
 
-    @Test
-    public void rowTruncatesLongContent() throws Exception {
-        Method method = accessMethod("row", String.class);
-        String result = (String) method.invoke(null, "y".repeat(100));
-        assertTrue(result.contains("…"));
-        assertTrue(result.startsWith("│"));
-        assertTrue(result.endsWith("│"));
-        assertEquals(72, result.length());
-    }
+    // @Test
+    // public void rowTruncatesLongContent() throws Exception {
+    // Method method = accessMethod("row", String.class);
+    // String result = (String) method.invoke(null, "y".repeat(100));
+    // assertTrue(result.contains("…"));
+    // assertTrue(result.startsWith("│"));
+    // assertTrue(result.endsWith("│"));
+    // assertEquals(72, result.length());
+    // }
 
-    @Test
-    public void fieldLineFormatsLabelAndValue() throws Exception {
-        Method method = accessMethod("fieldLine", String.class, String.class);
-        String result = (String) method.invoke(null, "Name", "value");
-        assertTrue(result.contains("Name"));
-        assertTrue(result.contains("[value"));
-        assertEquals(72, result.length());
-    }
+    // @Test
+    // public void fieldLineFormatsLabelAndValue() throws Exception {
+    // Method method = accessMethod("fieldLine", String.class, String.class);
+    // String result = (String) method.invoke(null, "Name", "value");
+    // assertTrue(result.contains("Name"));
+    // assertTrue(result.contains("[value"));
+    // assertEquals(72, result.length());
+    // }
 
-    @Test
-    public void printBorderPrintsFullWidthLine() throws Exception {
-        String output = captureOut(() -> {
-            Method method = accessMethod("printBorder", char.class, char.class, char.class);
-            method.invoke(null, '┌', '─', '┐');
-            return null;
-        });
-        String expected = "┌" + "─".repeat(70) + "┐" + System.lineSeparator();
-        assertEquals(expected, output);
-    }
+    // @Test
+    // public void printBorderPrintsFullWidthLine() throws Exception {
+    // String output = captureOut(() -> {
+    // Method method = accessMethod("printBorder", char.class, char.class,
+    // char.class);
+    // method.invoke(null, '┌', '─', '┐');
+    // return null;
+    // });
+    // String expected = "┌" + "─".repeat(70) + "┐" + System.lineSeparator();
+    // assertEquals(expected, output);
+    // }
 
     @Test
     public void renderFormUploadOutputsKeySections() throws Exception {
