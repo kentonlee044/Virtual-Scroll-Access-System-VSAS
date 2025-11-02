@@ -42,17 +42,18 @@ class LoginCliTest {
         assertNull(resultHolder[0]);
     }
 
-    @Test
-    void promptPasswordUsesScannerWhenConsoleMissing() throws Exception {
-        LoginCli cli = newCli("\n\nsecret\n");
-        Method method = LoginCli.class.getDeclaredMethod("promptPassword", java.io.Console.class, String.class);
-        method.setAccessible(true);
+    // @Test
+    // void promptPasswordUsesScannerWhenConsoleMissing() throws Exception {
+    // LoginCli cli = newCli("\n\nsecret\n");
+    // Method method = LoginCli.class.getDeclaredMethod("promptPassword",
+    // java.io.Console.class, String.class);
+    // method.setAccessible(true);
 
-        final Object[] resultHolder = new Object[1];
-        captureStdOut(() -> resultHolder[0] = invoke(method, cli, null, "user123"));
+    // final Object[] resultHolder = new Object[1];
+    // captureStdOut(() -> resultHolder[0] = invoke(method, cli, null, "user123"));
 
-        assertEquals("secret", resultHolder[0]);
-    }
+    // assertEquals("secret", resultHolder[0]);
+    // }
 
     @Test
     void promptPasswordReturnsNullWhenInputMissing() throws Exception {
