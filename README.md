@@ -1,8 +1,7 @@
 # Virtual Scroll Access System (VSAS)
 
 > **Group A3-T10-G09** · SOFT2412 2025 S2  
-> A command-line app that simulates a virtual scroll library for Whiskers to upload, search, preview, and download scrolls.
-
+> A University Project - command-line app that simulates a virtual scroll library for Whiskers to upload, search, preview, download scrolls implementing secure logging in and signing up.
 ---
 
 ## Team
